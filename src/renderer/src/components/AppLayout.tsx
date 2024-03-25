@@ -18,7 +18,7 @@ export const SideBar = ({ showSideBar, className, children, ...props }: SideBarP
   return (
     <aside
       className={cn(
-        'w-[250px] mt-10 h-[100vh + 10px] overflow-auto transition-all duration-300 ease-out',
+        'w-[250px] mt-10 h-[100vh + 10px] overflow-y-auto overflow-x-hidden transition-all duration-300 ease-out',
         {
           'translate-x-[-100%]': !showSideBar,
           'translate-x-0': showSideBar,

@@ -1,9 +1,25 @@
 import { NoteContent, NoteInfo } from '@shared/models'
 import { atom } from 'jotai'
 import { unwrap } from 'jotai/utils'
+import { isEmpty } from 'lodash'
 
 const loadNotes = async () => {
-  const notes = await window.context.getNotes()
+  let notes = await window.context.getNotes()
+
+  if (localStorage.getItem('bookmarks')) {
+    const bookmarks: string[] = JSON.parse(localStorage.getItem('bookmarks')!)
+    if (!isEmpty(bookmarks)) {
+      notes = notes.map((note) => {
+        if (bookmarks.includes(note.title)) {
+          console.log(note)
+          return { ...note, bookmarked: true }
+        }
+        return note
+      })
+    }
+  }
+
+  console.log(notes)
 
   // sort them by most recently edited
   return notes.sort((a, b) => b.lastEditTime - a.lastEditTime)
@@ -95,6 +111,14 @@ export const deleteNoteAtom = atom(null, async (get, set) => {
   const isDeleted = await window.context.deleteNote(selectedNote.title)
   if (!isDeleted) return
 
+  if (localStorage.getItem('bookmarks')) {
+    const bookmarks: string[] = JSON.parse(localStorage.getItem('bookmarks')!)
+    if (bookmarks.includes(selectedNote.title)) {
+      bookmarks.filter((bookmark) => bookmark !== selectedNote.title)
+      localStorage.setItem('bookmarks', JSON.stringify(bookmarks))
+    }
+  }
+
   set(
     notesAtom,
     notes.filter((note) => note.title !== selectedNote.title)
@@ -108,6 +132,20 @@ export const bookmarkNoteAtom = atom(null, (get, set) => {
   const selectedNote = get(selectedNoteAtom)
 
   if (!selectedNote || !notes) return
+
+  let bookmarks: string[] = []
+
+  if (localStorage.getItem('bookmarks')) {
+    bookmarks = JSON.parse(localStorage.getItem('bookmarks')!)
+  }
+
+  if (bookmarks.includes(selectedNote.title)) {
+    bookmarks = bookmarks.filter((bookmark) => bookmark !== selectedNote.title)
+  } else {
+    bookmarks.push(selectedNote.title)
+  }
+
+  localStorage.setItem('bookmarks', JSON.stringify(bookmarks))
 
   set(
     notesAtom,
