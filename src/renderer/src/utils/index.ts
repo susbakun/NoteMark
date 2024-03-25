@@ -29,3 +29,7 @@ export const checkIfNodeIsAnchor = (node: HTMLElement | null): boolean => {
 export const filterNotes = (notes: NoteInfo[], searched: string): NoteInfo[] => {
   return notes.filter((note) => note.title.toLowerCase().includes(searched.toLowerCase()))
 }
+
+export const getBookmarkedNotes = (notes: NoteInfo[]): NoteInfo[] => {
+  return notes.filter((note) => note.bookmarked)
+}

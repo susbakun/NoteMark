@@ -7,7 +7,7 @@ import {
   NotePreviewList,
   RootLayout,
   SideBar,
-  ToggleSideBarButton
+  ToggleSideBarAndBookMarkRow
 } from '@/components'
 import { useSetAtom } from 'jotai'
 import { ChangeEvent, useRef, useState } from 'react'
@@ -70,18 +70,23 @@ const App = () => {
             showSearchBar={searchClicked}
             searched={searched}
           />
-          <NotePreviewList searched={searched} className="mt-3 space-y-1" onSelect={resetScroll} />
+          <NotePreviewList
+            showBookmarks={showBookmarks}
+            searched={searched}
+            className="mt-3 space-y-1"
+            onSelect={resetScroll}
+          />
         </SideBar>
         <Content
           onClick={handleOpenLink}
           ref={contentContainerRef}
           showSideBar={showSideBar}
-          className="relative pt-2 bg-zinc-900/50 border-l-white/20"
+          className="relative pt-3 bg-zinc-900/50 border-l-white/20"
         >
-          <ToggleSideBarButton
+          <ToggleSideBarAndBookMarkRow
             showSideBar={showSideBar}
-            toggleSideBar={handleToggleSideBar}
-            className="absolute top-10 left-2"
+            handleToggleSideBar={handleToggleSideBar}
+            className="flex justify-between absolute top-10 left-2 w-full max-w-full px-4"
           />
           <FloatingNoteTitle className="pt-2" />
           <MarkdownEditor />

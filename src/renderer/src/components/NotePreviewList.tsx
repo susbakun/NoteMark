@@ -1,6 +1,6 @@
 import { NotePreview } from '@/components'
 import { useNotesList } from '@renderer/hooks/useNotesList'
-import { filterNotes } from '@renderer/utils'
+import { filterNotes, getBookmarkedNotes } from '@renderer/utils'
 import { isEmpty } from 'lodash'
 import { ComponentProps } from 'react'
 import { twMerge } from 'tailwind-merge'
@@ -8,10 +8,12 @@ import { twMerge } from 'tailwind-merge'
 export type NotePreviewListProps = ComponentProps<'ul'> & {
   onSelect?: () => void
   searched: string
+  showBookmarks: boolean
 }
 
 export const NotePreviewList = ({
   searched,
+  showBookmarks,
   onSelect,
   className,
   ...props
@@ -28,7 +30,11 @@ export const NotePreviewList = ({
     )
   }
 
-  const filteredNotes = filterNotes(notes, searched)
+  let filteredNotes = filterNotes(notes, searched)
+
+  if (showBookmarks) {
+    filteredNotes = getBookmarkedNotes(notes)
+  }
 
   return (
     <ul className={twMerge('transition-all duration-200 ease-out', className)} {...props}>

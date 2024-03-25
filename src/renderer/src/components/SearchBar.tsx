@@ -24,7 +24,6 @@ export const SearchBar = ({
       {...props}
     >
       <input
-        autoFocus
         placeholder="Search"
         value={searched}
         onChange={onInputChange}

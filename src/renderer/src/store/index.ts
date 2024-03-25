@@ -39,6 +39,7 @@ export const selectedNoteAtom = unwrap(
     prev ?? {
       title: '',
       content: '',
+      bookmarked: false,
       lastEditTime: Date.now()
     }
 )
@@ -77,7 +78,8 @@ export const createEmptyNoteAtom = atom(null, async (get, set) => {
 
   const newNote: NoteInfo = {
     title,
-    lastEditTime: Date.now()
+    lastEditTime: Date.now(),
+    bookmarked: false
   }
 
   set(notesAtom, [newNote, ...notes.filter((note) => note.title !== newNote.title)])
@@ -99,4 +101,21 @@ export const deleteNoteAtom = atom(null, async (get, set) => {
   )
 
   set(selectedNoteIndexAtom, null)
+})
+
+export const bookmarkNoteAtom = atom(null, (get, set) => {
+  const notes = get(notesAtom)
+  const selectedNote = get(selectedNoteAtom)
+
+  if (!selectedNote || !notes) return
+
+  set(
+    notesAtom,
+    notes.map((note) => {
+      if (note.title === selectedNote.title) {
+        return { ...note, bookmarked: !selectedNote.bookmarked }
+      }
+      return note
+    })
+  )
 })
