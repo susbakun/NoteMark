@@ -1,7 +1,7 @@
 import { appDirectoryName, fileEncoding, welcomeNoteFilename } from '@shared/constants'
 import { NoteInfo } from '@shared/models'
-import { CreateNote, DeleteNote, GetNotes, ReadNote, WriteNote } from '@shared/types'
-import { dialog } from 'electron'
+import { CreateNote, DeleteNote, GetNotes, OpenLink, ReadNote, WriteNote } from '@shared/types'
+import { dialog, shell } from 'electron'
 import { ensureDir, readdir, readFile, remove, stat, writeFile } from 'fs-extra'
 import { isEmpty } from 'lodash'
 import { homedir } from 'os'
@@ -111,4 +111,8 @@ export const deleteNote: DeleteNote = async (filename) => {
   console.info('Deleting note: ', filename)
   await remove(`${rootDir}/${filename}.md`)
   return true
+}
+
+export const openLink: OpenLink = async (link) => {
+  await shell.openExternal(link)
 }

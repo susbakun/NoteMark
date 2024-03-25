@@ -12,7 +12,7 @@ export const DeleteButton = ({ ...props }: ActionButtonProps) => {
 
   return (
     <ActionButton onClick={handleDelete} {...props}>
-      <FaRegTrashCan className="w-4 h-4 text-zinc-300" />
+      <FaRegTrashCan className="w-5 h-5 text-zinc-300" />
     </ActionButton>
   )
 }

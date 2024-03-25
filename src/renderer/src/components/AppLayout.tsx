@@ -1,3 +1,4 @@
+import { cn } from '@renderer/utils'
 import { ComponentProps, forwardRef } from 'react'
 import { twMerge } from 'tailwind-merge'
 
@@ -9,10 +10,24 @@ export const RootLayout = ({ children, className, ...props }: ComponentProps<'ma
   )
 }
 
-export const SideBar = ({ className, children, ...props }: ComponentProps<'aside'>) => {
+type SideBarProps = ComponentProps<'aside'> & {
+  showSideBar: boolean
+}
+
+export const SideBar = ({ showSideBar, className, children, ...props }: SideBarProps) => {
   return (
     <aside
-      className={twMerge('w-[250px] mt-10 h-[100vh + 10px] overflow-auto', className)}
+      className={cn(
+        'w-[250px] mt-10 h-[100vh + 10px] overflow-auto transition-all duration-300 ease-out',
+        {
+          'translate-x-[-100%]': !showSideBar,
+          'translate-x-0': showSideBar,
+          'w-0': !showSideBar,
+          'p-0': !showSideBar,
+          'p-2': showSideBar
+        },
+        className
+      )}
       {...props}
     >
       {children}
@@ -20,10 +35,23 @@ export const SideBar = ({ className, children, ...props }: ComponentProps<'aside
   )
 }
 
-export const Content = forwardRef<HTMLDivElement, ComponentProps<'div'>>(
-  ({ children, className, ...props }, ref) => {
+type ContentProps = ComponentProps<'div'> & {
+  showSideBar: boolean
+}
+
+export const Content = forwardRef<HTMLDivElement, ContentProps>(
+  ({ children, showSideBar, className, onClick, ...props }, ref) => {
     return (
-      <div ref={ref} className={twMerge('flex-1 overflow-auto', className)} {...props}>
+      <div
+        onClick={onClick}
+        ref={ref}
+        className={cn(
+          'flex-1 transition-all duration-150 ease-in overflow-auto',
+          { 'border-l': showSideBar, 'border-l-0': !showSideBar },
+          className
+        )}
+        {...props}
+      >
         {children}
       </div>
     )

@@ -1,11 +1,11 @@
-import { createNote, deleteNote, getNotes, readNote, writeNote } from '@/lib'
+import { createNote, deleteNote, getNotes, openLink, readNote, writeNote } from '@/lib'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { CreateNote, DeleteNote, GetNotes, ReadNote, WriteNote } from '@shared/types'
-import { app, BrowserWindow, ipcMain, shell } from 'electron'
+import { CreateNote, DeleteNote, GetNotes, OpenLink, ReadNote, WriteNote } from '@shared/types'
+import { app, BrowserWindow, globalShortcut, ipcMain, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
 
-function createWindow(): void {
+function createWindow(): BrowserWindow {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 750,
@@ -43,6 +43,8 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  return mainWindow
 }
 
 // This method will be called when Electron has finished
@@ -67,8 +69,17 @@ app.whenReady().then(() => {
   ipcMain.handle('writeNote', (_, ...args: Parameters<WriteNote>) => writeNote(...args))
   ipcMain.handle('createNote', (_, ...args: Parameters<CreateNote>) => createNote(...args))
   ipcMain.handle('deleteNote', (_, ...args: Parameters<DeleteNote>) => deleteNote(...args))
+  ipcMain.handle('openLink', (_, ...args: Parameters<OpenLink>) => openLink(...args))
 
-  createWindow()
+  const mainWindow = createWindow()
+
+  const changeReadOnlyMode = globalShortcut.register('CommandOrControl+Alt+P', () =>
+    mainWindow.webContents.send('changeReadOnlyMode')
+  )
+
+  if (!changeReadOnlyMode) {
+    console.info('The changeReadOnlyMode shortcut not registered successfully!')
+  }
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

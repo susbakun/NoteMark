@@ -30,7 +30,7 @@ export const useMarkdownEditor = () => {
 
     handleAutoSaving.cancel()
 
-    const content = await editorRef.current?.getMarkdown()
+    const content = editorRef.current?.getMarkdown()
 
     if (content != null) {
       await saveNote(content)

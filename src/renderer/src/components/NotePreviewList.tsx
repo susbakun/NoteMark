@@ -1,14 +1,21 @@
 import { NotePreview } from '@/components'
 import { useNotesList } from '@renderer/hooks/useNotesList'
+import { filterNotes } from '@renderer/utils'
 import { isEmpty } from 'lodash'
 import { ComponentProps } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 export type NotePreviewListProps = ComponentProps<'ul'> & {
   onSelect?: () => void
+  searched: string
 }
 
-export const NotePreviewList = ({ onSelect, className, ...props }: NotePreviewListProps) => {
+export const NotePreviewList = ({
+  searched,
+  onSelect,
+  className,
+  ...props
+}: NotePreviewListProps) => {
   const { notes, selectedNoteIndex, handleNoteSelect } = useNotesList({ onSelect })
 
   if (!notes) return null
@@ -20,9 +27,12 @@ export const NotePreviewList = ({ onSelect, className, ...props }: NotePreviewLi
       </ul>
     )
   }
+
+  const filteredNotes = filterNotes(notes, searched)
+
   return (
-    <ul className={className} {...props}>
-      {notes.map((note, index) => (
+    <ul className={twMerge('transition-all duration-200 ease-out', className)} {...props}>
+      {filteredNotes.map((note, index) => (
         <NotePreview
           key={note.title + note.lastEditTime}
           isActive={selectedNoteIndex === index}
