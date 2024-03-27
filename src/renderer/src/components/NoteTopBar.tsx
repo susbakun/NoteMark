@@ -7,7 +7,7 @@ type ToggleSideBarAndBookMarkRowProps = ComponentProps<'div'> & {
   handleToggleSideBar: () => void
 }
 
-export const ToggleSideBarAndBookMarkRow = ({
+export const NoteTopBar = ({
   showSideBar,
   handleToggleSideBar,
   ...props

@@ -1,13 +1,13 @@
 import {
   ActionButtonsRow,
   Content,
-  DraggbleTopBar,
+  DraggableTopBar,
   FloatingNoteTitle,
   MarkdownEditor,
   NotePreviewList,
+  NoteTopBar,
   RootLayout,
-  SideBar,
-  ToggleSideBarAndBookMarkRow
+  SideBar
 } from '@/components'
 import { useSetAtom } from 'jotai'
 import { ChangeEvent, useRef, useState } from 'react'
@@ -55,7 +55,7 @@ const App = () => {
 
   return (
     <>
-      <DraggbleTopBar />
+      <DraggableTopBar />
       <RootLayout>
         <SideBar showSideBar={showSideBar}>
           <ActionButtonsRow
@@ -83,7 +83,7 @@ const App = () => {
           showSideBar={showSideBar}
           className="relative pt-3 bg-zinc-900/50 border-l-white/20"
         >
-          <ToggleSideBarAndBookMarkRow
+          <NoteTopBar
             showSideBar={showSideBar}
             handleToggleSideBar={handleToggleSideBar}
             className="flex justify-between absolute top-10 left-2 w-full max-w-full px-4"
