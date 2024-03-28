@@ -36,14 +36,16 @@ export const SideBar = ({ showSideBar, className, children, ...props }: SideBarP
 }
 
 type ContentProps = ComponentProps<'div'> & {
+  onContextMenu: () => void
   showSideBar: boolean
 }
 
 export const Content = forwardRef<HTMLDivElement, ContentProps>(
-  ({ children, showSideBar, className, onClick, ...props }, ref) => {
+  ({ onContextMenu, children, showSideBar, className, onClick, ...props }, ref) => {
     return (
       <div
         onClick={onClick}
+        onContextMenu={onContextMenu}
         ref={ref}
         className={cn(
           'flex-1 transition-all duration-150 ease-in overflow-y-auto overflow-x-hidden',

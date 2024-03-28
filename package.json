@@ -24,8 +24,10 @@
     "@electron-toolkit/preload": "^3.0.0",
     "@electron-toolkit/utils": "^3.0.0",
     "@mdxeditor/editor": "^2.16.0",
+    "@tippyjs/react": "^4.2.6",
     "fs-extra": "^11.2.0",
-    "jotai": "^2.7.1"
+    "jotai": "^2.7.1",
+    "tippy.js": "^6.3.7"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",

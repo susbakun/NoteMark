@@ -1,7 +1,18 @@
+import { createContextMenu } from '@/configs/AppContextMenu'
+import { createApplicationMenu } from '@/configs/AppMenuBar'
 import { appDirectoryName, fileEncoding, welcomeNoteFilename } from '@shared/constants'
 import { NoteInfo } from '@shared/models'
-import { CreateNote, DeleteNote, GetNotes, OpenLink, ReadNote, WriteNote } from '@shared/types'
-import { dialog, shell } from 'electron'
+import {
+  CreateNote,
+  DeleteNote,
+  GetNotes,
+  OpenLink,
+  ReadNote,
+  ShowContextMenu,
+  ShowFile,
+  WriteNote
+} from '@shared/types'
+import { BrowserWindow, dialog, shell } from 'electron'
 import { ensureDir, readdir, readFile, remove, stat, writeFile } from 'fs-extra'
 import { isEmpty } from 'lodash'
 import { homedir } from 'os'
@@ -48,6 +59,10 @@ export const getNoteInfoFromFilename = async (filename: string): Promise<NoteInf
 
 export const readNote: ReadNote = async (filename) => {
   const rootDir = getRootDir()
+
+  const window = BrowserWindow.getFocusedWindow()
+  window?.setRepresentedFilename(filename)
+  createApplicationMenu()
 
   return readFile(`${rootDir}/${filename}.md`, { encoding: fileEncoding })
 }
@@ -116,4 +131,14 @@ export const deleteNote: DeleteNote = async (filename) => {
 
 export const openLink: OpenLink = async (link) => {
   await shell.openExternal(link)
+}
+
+export const showFile: ShowFile = (fileName) => {
+  const rootDir = getRootDir()
+  shell.showItemInFolder(`${rootDir}/${fileName}.md`)
+}
+
+export const showContextMenu: ShowContextMenu = () => {
+  const contextMenu = createContextMenu()
+  contextMenu.popup()
 }

@@ -9,10 +9,16 @@ import {
   RootLayout,
   SideBar
 } from '@/components'
-import { useSetAtom } from 'jotai'
-import { ChangeEvent, useRef, useState } from 'react'
+import { NoteInfo } from '@shared/models'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { SearchBar } from './components/SearchBar'
-import { selectedNoteIndexAtom } from './store'
+import {
+  createEmptyNoteAtom,
+  deleteNoteAtom,
+  selectedNoteAtom,
+  selectedNoteIndexAtom
+} from './store'
 import { checkIfNodeIsAnchor, getParentNode } from './utils'
 
 const App = () => {
@@ -21,7 +27,11 @@ const App = () => {
   const [searchClicked, setSearchClicked] = useState(false)
   const [searched, setSearched] = useState('')
   const [showBookmarks, setShowBookmarks] = useState(false)
+
   const setSelectedNoteIndex = useSetAtom(selectedNoteIndexAtom)
+  const createEmptyNote = useSetAtom(createEmptyNoteAtom)
+  const selectedNote = useAtomValue(selectedNoteAtom)
+  const deleteNote = useSetAtom(deleteNoteAtom)
 
   const resetScroll = () => {
     contentContainerRef.current?.scrollTo(0, 0)
@@ -53,6 +63,28 @@ const App = () => {
     }
   }
 
+  const handleCreation = async () => {
+    await createEmptyNote()
+  }
+
+  const getSelectedFile = (): NoteInfo['title'] | false => {
+    console.log(selectedNote)
+    if (selectedNote) return selectedNote.title
+    return false
+  }
+
+  const handleDelete = async () => {
+    await deleteNote()
+  }
+
+  const handleContextMenu = () => {
+    window.context.showContextMenu()
+  }
+
+  useEffect(() => {
+    window.context.initilization(handleCreation, getSelectedFile)
+  }, [])
+
   return (
     <>
       <DraggableTopBar />
@@ -63,6 +95,8 @@ const App = () => {
             showBookmarks={showBookmarks}
             onSearchButtonClick={handleCloseSearchBar}
             onBookMarkButtonClick={handleShowBookMarks}
+            onCreateEmptyNote={handleCreation}
+            onDeleteNote={handleDelete}
             className="flex justify-between mt-1"
           />
           <SearchBar
@@ -78,6 +112,7 @@ const App = () => {
           />
         </SideBar>
         <Content
+          onContextMenu={handleContextMenu}
           onClick={handleOpenLink}
           ref={contentContainerRef}
           showSideBar={showSideBar}

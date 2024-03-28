@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: notemark
+productName: Note Mark
 directories:
   buildResources: build
 files:

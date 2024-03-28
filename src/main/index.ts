@@ -1,11 +1,30 @@
-import { createNote, deleteNote, getNotes, openLink, readNote, writeNote } from '@/lib'
+import {
+  createNote,
+  deleteNote,
+  getNotes,
+  openLink,
+  readNote,
+  showContextMenu,
+  showFile,
+  writeNote
+} from '@/lib'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { CreateNote, DeleteNote, GetNotes, OpenLink, ReadNote, WriteNote } from '@shared/types'
+import {
+  CreateNote,
+  DeleteNote,
+  GetNotes,
+  OpenLink,
+  ReadNote,
+  ShowContextMenu,
+  ShowFile,
+  WriteNote
+} from '@shared/types'
 import { app, BrowserWindow, globalShortcut, ipcMain, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
+import { createApplicationMenu } from './configs/AppMenuBar'
 
-function createWindow(): BrowserWindow {
+export function createWindow(): BrowserWindow {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 750,
@@ -70,8 +89,14 @@ app.whenReady().then(() => {
   ipcMain.handle('createNote', (_, ...args: Parameters<CreateNote>) => createNote(...args))
   ipcMain.handle('deleteNote', (_, ...args: Parameters<DeleteNote>) => deleteNote(...args))
   ipcMain.handle('openLink', (_, ...args: Parameters<OpenLink>) => openLink(...args))
+  ipcMain.handle('showFile', (_, ...args: Parameters<ShowFile>) => showFile(...args))
+  ipcMain.handle('showContextMenu', (_, ...args: Parameters<ShowContextMenu>) =>
+    showContextMenu(...args)
+  )
 
   const mainWindow = createWindow()
+
+  createApplicationMenu()
 
   const changeReadOnlyMode = globalShortcut.register('CommandOrControl+Alt+P', () =>
     mainWindow.webContents.send('changeReadOnlyMode')

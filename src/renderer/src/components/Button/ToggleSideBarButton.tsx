@@ -17,6 +17,7 @@ export const ToggleSideBarButton = ({
   return (
     <ActionButton
       title="Toggle the SideBar"
+      direction="right"
       className={twMerge('opacity-0 hover:opacity-100 transition-all duration-100 ', className)}
       onClick={toggleSideBar}
       {...props}
