@@ -9,17 +9,16 @@ import {
   RootLayout,
   SideBar
 } from '@/components'
-import { NoteInfo } from '@shared/models'
-import { useAtomValue, useSetAtom } from 'jotai'
-import { ChangeEvent, useEffect, useRef, useState } from 'react'
-import { SearchBar } from './components/SearchBar'
+import { SearchBar } from '@/components/SearchBar'
 import {
   createEmptyNoteAtom,
   deleteNoteAtom,
   selectedNoteAtom,
   selectedNoteIndexAtom
-} from './store'
-import { checkIfNodeIsAnchor, getParentNode } from './utils'
+} from '@/store'
+import { checkIfNodeIsAnchor, getParentNode } from '@/utils'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 
 const App = () => {
   const contentContainerRef = useRef<HTMLDivElement>(null)
@@ -67,13 +66,7 @@ const App = () => {
     await createEmptyNote()
   }
 
-  const getSelectedFile = (): NoteInfo['title'] | false => {
-    console.log(selectedNote)
-    if (selectedNote) return selectedNote.title
-    return false
-  }
-
-  const handleDelete = async () => {
+  const handleDeleteNote = async () => {
     await deleteNote()
   }
 
@@ -81,22 +74,27 @@ const App = () => {
     window.context.showContextMenu()
   }
 
+  const handleSideBarContextMenu = (index: number) => {
+    setSelectedNoteIndex(index)
+    window.context.showSideBarContextMenu()
+  }
+
   useEffect(() => {
-    window.context.initilization(handleCreation, getSelectedFile)
+    window.context.initilization(handleCreation, handleDeleteNote)
   }, [])
 
   return (
     <>
       <DraggableTopBar />
       <RootLayout>
-        <SideBar showSideBar={showSideBar}>
+        <SideBar onDeleteNote={handleDeleteNote} showSideBar={showSideBar}>
           <ActionButtonsRow
             searchClicked={searchClicked}
             showBookmarks={showBookmarks}
             onSearchButtonClick={handleCloseSearchBar}
             onBookMarkButtonClick={handleShowBookMarks}
             onCreateEmptyNote={handleCreation}
-            onDeleteNote={handleDelete}
+            onDeleteNote={handleDeleteNote}
             className="flex justify-between mt-1"
           />
           <SearchBar
@@ -109,12 +107,12 @@ const App = () => {
             searched={searched}
             className="mt-3 space-y-1"
             onSelect={resetScroll}
+            onSidebarContextMenu={handleSideBarContextMenu}
           />
         </SideBar>
         <Content
-          onContextMenu={handleContextMenu}
-          onClick={handleOpenLink}
           ref={contentContainerRef}
+          onClick={handleOpenLink}
           showSideBar={showSideBar}
           className="relative pt-3 bg-zinc-900/50 border-l-white/20"
         >
@@ -124,7 +122,7 @@ const App = () => {
             className="flex justify-between absolute top-10 left-2 w-full max-w-full px-4"
           />
           <FloatingNoteTitle className="pt-2" />
-          <MarkdownEditor />
+          <MarkdownEditor onContextMenu={handleContextMenu} />
         </Content>
       </RootLayout>
     </>

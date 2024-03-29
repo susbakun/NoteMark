@@ -7,6 +7,7 @@ import {
   OpenLink,
   ReadNote,
   ShowContextMenu,
+  ShowSideBarContextMenu,
   WriteNote
 } from '@shared/types'
 import { contextBridge, ipcRenderer } from 'electron'
@@ -25,6 +26,8 @@ try {
     deleteNote: (...args: Parameters<DeleteNote>) => ipcRenderer.invoke('deleteNote', ...args),
     showContextMenu: (...args: Parameters<ShowContextMenu>) =>
       ipcRenderer.invoke('showContextMenu', ...args),
+    showSideBarContextMenu: (...args: Parameters<ShowSideBarContextMenu>) =>
+      ipcRenderer.invoke('showSideBarContextMenu', ...args),
     openLink: (...args: Parameters<OpenLink>) => ipcRenderer.invoke('openLink', ...args),
     initilization: (...args: Parameters<Initialization>) => {
       ipcRenderer.on('createNote', async () => {
@@ -33,12 +36,11 @@ try {
       })
 
       ipcRenderer.on('showFile', () => {
-        const getSelectedFileName = args[1]
-        const fileName = getSelectedFileName()
-        console.log(fileName)
-        if (fileName) {
-          ipcRenderer.invoke('showFile', fileName)
-        }
+        ipcRenderer.invoke('showFile')
+      })
+      ipcRenderer.on('deleteNote', () => {
+        const handleDeleteNote = args[1]
+        handleDeleteNote()
       })
     }
   })

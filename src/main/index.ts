@@ -6,6 +6,7 @@ import {
   readNote,
   showContextMenu,
   showFile,
+  showSideBarContextMenu,
   writeNote
 } from '@/lib'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
@@ -17,12 +18,13 @@ import {
   ReadNote,
   ShowContextMenu,
   ShowFile,
+  ShowSideBarContextMenu,
   WriteNote
 } from '@shared/types'
 import { app, BrowserWindow, globalShortcut, ipcMain, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
-import { createApplicationMenu } from './configs/AppMenuBar'
+import { createApplicationMenu } from './configs/AppMenu'
 
 export function createWindow(): BrowserWindow {
   // Create the browser window.
@@ -92,6 +94,9 @@ app.whenReady().then(() => {
   ipcMain.handle('showFile', (_, ...args: Parameters<ShowFile>) => showFile(...args))
   ipcMain.handle('showContextMenu', (_, ...args: Parameters<ShowContextMenu>) =>
     showContextMenu(...args)
+  )
+  ipcMain.handle('showSideBarContextMenu', (_, ...args: Parameters<ShowSideBarContextMenu>) =>
+    showSideBarContextMenu(...args)
   )
 
   const mainWindow = createWindow()

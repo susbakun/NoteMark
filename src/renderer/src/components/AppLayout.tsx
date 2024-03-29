@@ -1,5 +1,5 @@
-import { cn } from '@renderer/utils'
-import { ComponentProps, forwardRef } from 'react'
+import { cn, hasFocus } from '@renderer/utils'
+import { ComponentProps, forwardRef, useEffect, useRef } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 export const RootLayout = ({ children, className, ...props }: ComponentProps<'main'>) => {
@@ -12,11 +12,35 @@ export const RootLayout = ({ children, className, ...props }: ComponentProps<'ma
 
 type SideBarProps = ComponentProps<'aside'> & {
   showSideBar: boolean
+  onDeleteNote: () => void
 }
 
-export const SideBar = ({ showSideBar, className, children, ...props }: SideBarProps) => {
+export const SideBar = ({
+  onDeleteNote,
+  showSideBar,
+  className,
+  children,
+  ...props
+}: SideBarProps) => {
+  const sidebarRef = useRef<HTMLElement>(null)
+
+  const handleKeyboard = (event: KeyboardEvent) => {
+    const targetElement = event.target as HTMLElement
+    if (event.key === 'Backspace' && event.metaKey && hasFocus(targetElement)) {
+      onDeleteNote()
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyboard)
+    return () => {
+      document.removeEventListener('keydown', handleKeyboard)
+    }
+  }, [handleKeyboard, sidebarRef.current])
+
   return (
     <aside
+      ref={sidebarRef}
       className={cn(
         'w-[250px] mt-10 h-[100vh + 10px] overflow-y-auto overflow-x-hidden transition-all duration-300 ease-out',
         {
@@ -36,16 +60,14 @@ export const SideBar = ({ showSideBar, className, children, ...props }: SideBarP
 }
 
 type ContentProps = ComponentProps<'div'> & {
-  onContextMenu: () => void
   showSideBar: boolean
 }
 
 export const Content = forwardRef<HTMLDivElement, ContentProps>(
-  ({ onContextMenu, children, showSideBar, className, onClick, ...props }, ref) => {
+  ({ children, showSideBar, className, onClick, ...props }, ref) => {
     return (
       <div
         onClick={onClick}
-        onContextMenu={onContextMenu}
         ref={ref}
         className={cn(
           'flex-1 transition-all duration-150 ease-in overflow-y-auto overflow-x-hidden',

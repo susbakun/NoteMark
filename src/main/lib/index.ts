@@ -1,5 +1,6 @@
 import { createContextMenu } from '@/configs/AppContextMenu'
-import { createApplicationMenu } from '@/configs/AppMenuBar'
+import { createApplicationMenu } from '@/configs/AppMenu'
+import { createSideBarContextMenu } from '@/configs/SideBarContextMenu'
 import { appDirectoryName, fileEncoding, welcomeNoteFilename } from '@shared/constants'
 import { NoteInfo } from '@shared/models'
 import {
@@ -10,13 +11,14 @@ import {
   ReadNote,
   ShowContextMenu,
   ShowFile,
+  ShowSideBarContextMenu,
   WriteNote
 } from '@shared/types'
 import { BrowserWindow, dialog, shell } from 'electron'
 import { ensureDir, readdir, readFile, remove, stat, writeFile } from 'fs-extra'
 import { isEmpty } from 'lodash'
 import { homedir } from 'os'
-import path from 'path'
+import path, { parse } from 'path'
 import welcomeNote from '../../../resources/welcomeNote.md?asset'
 
 export const getRootDir = () => {
@@ -133,12 +135,22 @@ export const openLink: OpenLink = async (link) => {
   await shell.openExternal(link)
 }
 
-export const showFile: ShowFile = (fileName) => {
+export const showFile: ShowFile = () => {
   const rootDir = getRootDir()
-  shell.showItemInFolder(`${rootDir}/${fileName}.md`)
+  const filePath = BrowserWindow.getFocusedWindow()?.getRepresentedFilename()
+
+  if (filePath) {
+    const { name: fileName } = parse(filePath)
+    shell.showItemInFolder(`${rootDir}/${fileName}.md`)
+  }
 }
 
 export const showContextMenu: ShowContextMenu = () => {
   const contextMenu = createContextMenu()
   contextMenu.popup()
+}
+
+export const showSideBarContextMenu: ShowSideBarContextMenu = () => {
+  const sidebarCn = createSideBarContextMenu()
+  sidebarCn.popup()
 }

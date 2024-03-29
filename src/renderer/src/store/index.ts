@@ -11,15 +11,12 @@ const loadNotes = async () => {
     if (!isEmpty(bookmarks)) {
       notes = notes.map((note) => {
         if (bookmarks.includes(note.title)) {
-          console.log(note)
           return { ...note, bookmarked: true }
         }
         return note
       })
     }
   }
-
-  console.log(notes)
 
   // sort them by most recently edited
   return notes.sort((a, b) => b.lastEditTime - a.lastEditTime)
@@ -104,6 +101,7 @@ export const createEmptyNoteAtom = atom(null, async (get, set) => {
 
 export const deleteNoteAtom = atom(null, async (get, set) => {
   const notes = get(notesAtom)
+
   const selectedNote = get(selectedNoteAtom)
 
   if (!selectedNote || !notes) return

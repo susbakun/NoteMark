@@ -33,3 +33,7 @@ export const filterNotes = (notes: NoteInfo[], searched: string): NoteInfo[] => 
 export const getBookmarkedNotes = (notes: NoteInfo[]): NoteInfo[] => {
   return notes.filter((note) => note.bookmarked)
 }
+
+export const hasFocus = (element: HTMLElement) => {
+  return element.tagName === 'BODY'
+}

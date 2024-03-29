@@ -8,7 +8,8 @@ export type DeleteNote = (title: NoteInfo['title']) => Promise<boolean>
 export type OpenLink = (link: string) => Promise<void>
 export type Initialization = (
   handleCreation: () => Promise<void>,
-  getSelectedFileName: () => NoteInfo['title'] | false
+  handleDeleteNote: () => Promise<void>
 ) => void
-export type ShowFile = (fileName: NoteInfo['title']) => void
+export type ShowFile = (filePath: NoteInfo['title']) => void
 export type ShowContextMenu = () => void
+export type ShowSideBarContextMenu = () => void

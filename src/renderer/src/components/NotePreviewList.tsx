@@ -7,14 +7,16 @@ import { twMerge } from 'tailwind-merge'
 
 export type NotePreviewListProps = ComponentProps<'ul'> & {
   onSelect?: () => void
+  onSidebarContextMenu: (index: number) => void
   searched: string
   showBookmarks: boolean
 }
 
 export const NotePreviewList = ({
+  onSelect,
+  onSidebarContextMenu,
   searched,
   showBookmarks,
-  onSelect,
   className,
   ...props
 }: NotePreviewListProps) => {
@@ -43,6 +45,7 @@ export const NotePreviewList = ({
           key={note.title + note.lastEditTime}
           isActive={selectedNoteIndex === index}
           onClick={handleNoteSelect(index)}
+          onContextMenu={() => onSidebarContextMenu(index)}
           {...note}
         />
       ))}

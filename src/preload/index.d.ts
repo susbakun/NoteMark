@@ -6,6 +6,7 @@ import {
   OpenLink,
   ReadNote,
   ShowContextMenu,
+  ShowSideBarContextMenu,
   WriteNote
 } from '@shared/types'
 
@@ -21,6 +22,7 @@ declare global {
       deleteNote: DeleteNote
       openLink: OpenLink
       showContextMenu: ShowContextMenu
+      showSideBarContextMenu: ShowSideBarContextMenu
       initilization: Initialization
     }
   }
