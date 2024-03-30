@@ -79,9 +79,6 @@ const App = () => {
   }
 
   useEffect(() => {
-    document.addEventListener('wheel', (ev: WheelEvent) => {
-      console.log(contentContainerRef.current?.scrollTop)
-    })
     window.context.initilization(handleCreation, handleDeleteNote)
   }, [])
 
