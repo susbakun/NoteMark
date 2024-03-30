@@ -14,6 +14,7 @@
     @apply bg-transparent;
     @apply font-mono antialiased text-white;
     @apply overflow-hidden;
+    @apply pt-[19.6px];
   }
 
   header {
@@ -26,7 +27,7 @@
   }
 
   ::-webkit-scrollbar {
-    @apply w-2;
+    @apply w-[10px] rounded-sm;
   }
 
   ::-webkit-scrollbar-thumb {
@@ -34,6 +35,6 @@
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-transparent;
+    @apply bg-[#555]/10;
   }
 }

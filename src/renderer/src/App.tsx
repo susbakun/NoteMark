@@ -2,7 +2,6 @@ import {
   ActionButtonsRow,
   Content,
   DraggableTopBar,
-  FloatingNoteTitle,
   MarkdownEditor,
   NotePreviewList,
   NoteTopBar,
@@ -80,6 +79,9 @@ const App = () => {
   }
 
   useEffect(() => {
+    document.addEventListener('wheel', (ev: WheelEvent) => {
+      console.log(contentContainerRef.current?.scrollTop)
+    })
     window.context.initilization(handleCreation, handleDeleteNote)
   }, [])
 
@@ -119,9 +121,9 @@ const App = () => {
           <NoteTopBar
             showSideBar={showSideBar}
             handleToggleSideBar={handleToggleSideBar}
-            className="flex justify-between absolute top-10 left-2 w-full max-w-full px-4"
+            className="flex justify-between items-center pt-1 w-full max-w-full px-4"
           />
-          <FloatingNoteTitle className="pt-2" />
+
           <MarkdownEditor onContextMenu={handleContextMenu} />
         </Content>
       </RootLayout>

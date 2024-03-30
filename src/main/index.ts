@@ -38,7 +38,7 @@ export function createWindow(): BrowserWindow {
     title: 'NoteMark',
     vibrancy: 'under-window',
     titleBarStyle: 'hidden',
-    trafficLightPosition: { x: 15, y: 10 },
+    trafficLightPosition: { x: 15, y: 13 },
     frame: false,
     visualEffectState: 'active',
     webPreferences: {

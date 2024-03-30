@@ -1,6 +1,5 @@
 import { ComponentProps } from 'react'
 import { LuPanelLeftClose, LuPanelRightClose } from 'react-icons/lu'
-import { twMerge } from 'tailwind-merge'
 import { ActionButton } from './ActionButton'
 
 type ToggleSideBarButtonProps = ComponentProps<'button'> & {
@@ -18,7 +17,7 @@ export const ToggleSideBarButton = ({
     <ActionButton
       title="Toggle the SideBar"
       direction="right"
-      className={twMerge('opacity-0 hover:opacity-100 transition-all duration-100 ', className)}
+      className={className}
       onClick={toggleSideBar}
       {...props}
     >
