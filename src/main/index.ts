@@ -31,6 +31,8 @@ export function createWindow(): BrowserWindow {
   const mainWindow = new BrowserWindow({
     width: 750,
     height: 550,
+    minWidth: 500,
+    minHeight: 285,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
