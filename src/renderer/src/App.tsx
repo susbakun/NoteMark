@@ -9,26 +9,22 @@ import {
   SideBar
 } from '@/components'
 import { SearchBar } from '@/components/SearchBar'
-import {
-  createEmptyNoteAtom,
-  deleteNoteAtom,
-  selectedNoteAtom,
-  selectedNoteIndexAtom
-} from '@/store'
+import { createEmptyNoteAtom, deleteNoteAtom, selectedNoteIndexAtom } from '@/store'
 import { checkIfNodeIsAnchor, getParentNode } from '@/utils'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 
 const App = () => {
   const contentContainerRef = useRef<HTMLDivElement>(null)
+
   const [showSideBar, setShowSideBar] = useState(true)
   const [searchClicked, setSearchClicked] = useState(false)
-  const [searched, setSearched] = useState('')
   const [showBookmarks, setShowBookmarks] = useState(false)
+  const [searched, setSearched] = useState('')
+  const [showFiles, setShowFiles] = useState(true)
 
   const setSelectedNoteIndex = useSetAtom(selectedNoteIndexAtom)
   const createEmptyNote = useSetAtom(createEmptyNoteAtom)
-  const selectedNote = useAtomValue(selectedNoteAtom)
   const deleteNote = useSetAtom(deleteNoteAtom)
 
   const resetScroll = () => {
@@ -50,6 +46,10 @@ const App = () => {
 
   const handleShowBookMarks = () => {
     setShowBookmarks((prev) => !prev)
+  }
+
+  const handleShowFiles = () => {
+    setShowFiles((prev) => !prev)
   }
 
   const handleOpenLink = (event: React.MouseEvent) => {
@@ -84,17 +84,22 @@ const App = () => {
 
   return (
     <>
-      <DraggableTopBar />
+      <DraggableTopBar
+        searchClicked={searchClicked}
+        showSideBar={showSideBar}
+        showFiles={showFiles}
+        showBookmarks={showBookmarks}
+        onToggleSideBar={handleToggleSideBar}
+        onShowFilesButtonClick={handleShowFiles}
+        onSearchButtonClick={handleCloseSearchBar}
+        onBookMarkButtonClick={handleShowBookMarks}
+      />
       <RootLayout>
         <SideBar onDeleteNote={handleDeleteNote} showSideBar={showSideBar}>
           <ActionButtonsRow
-            searchClicked={searchClicked}
-            showBookmarks={showBookmarks}
-            onSearchButtonClick={handleCloseSearchBar}
-            onBookMarkButtonClick={handleShowBookMarks}
             onCreateEmptyNote={handleCreation}
             onDeleteNote={handleDeleteNote}
-            className="flex justify-between mt-1"
+            className="flex justify-between mt-2"
           />
           <SearchBar
             onInputChange={handleSearchNote}
@@ -115,12 +120,7 @@ const App = () => {
           showSideBar={showSideBar}
           className="relative pt-3 bg-zinc-900/50 border-l-white/20"
         >
-          <NoteTopBar
-            showSideBar={showSideBar}
-            handleToggleSideBar={handleToggleSideBar}
-            className="flex justify-between items-center pt-1 w-full max-w-full px-4"
-          />
-
+          <NoteTopBar className="flex justify-between items-center ml-1  pt-1 w-full max-w-full px-4" />
           <MarkdownEditor onContextMenu={handleContextMenu} />
         </Content>
       </RootLayout>

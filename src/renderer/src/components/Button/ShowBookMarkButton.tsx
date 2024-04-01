@@ -18,9 +18,12 @@ export const ShowBookMarkButton = ({
       className={showBookmarks ? 'bg-zinc-600/50' : ''}
     >
       <LuBookMarked
-        className={cn('w-5 h-5 transition-colors duration-150 ease-in font-bold text-zinc-200', {
-          'text-white': showBookmarks
-        })}
+        className={cn(
+          'w-5 h-[18px] transition-colors duration-150 ease-in font-bold text-zinc-200',
+          {
+            'text-white': showBookmarks
+          }
+        )}
       />
     </ActionButton>
   )

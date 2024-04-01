@@ -29,7 +29,7 @@ import { createApplicationMenu } from './configs/AppMenu'
 export function createWindow(): BrowserWindow {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 750,
+    width: 760,
     height: 550,
     minWidth: 500,
     minHeight: 285,

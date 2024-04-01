@@ -1,5 +1,5 @@
 import { ComponentProps } from 'react'
-import { LuPanelLeftClose, LuPanelRightClose } from 'react-icons/lu'
+import { LuPanelLeftClose } from 'react-icons/lu'
 import { ActionButton } from './ActionButton'
 
 type ToggleSideBarButtonProps = ComponentProps<'button'> & {
@@ -21,11 +21,7 @@ export const ToggleSideBarButton = ({
       onClick={toggleSideBar}
       {...props}
     >
-      {showSideBar ? (
-        <LuPanelLeftClose className="text-zinc-300 w-6 h-6" />
-      ) : (
-        <LuPanelRightClose className="text-zinc-300 w-6 h-6" />
-      )}
+      <LuPanelLeftClose className="text-zinc-300 w-5 h-[18px]" />
     </ActionButton>
   )
 }

@@ -15,9 +15,12 @@ export const SearchButton = ({ searchClicked, onSearchButtonClick }: SearchButto
       onClick={onSearchButtonClick}
     >
       <FiSearch
-        className={cn('w-5 h-5 transition-colors duration-150 ease-in font-bold text-zinc-200', {
-          'text-white': searchClicked
-        })}
+        className={cn(
+          'w-5 h-[18px] transition-colors duration-150 ease-in font-bold text-zinc-200',
+          {
+            'text-white': searchClicked
+          }
+        )}
       />
     </ActionButton>
   )
