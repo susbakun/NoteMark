@@ -42,13 +42,14 @@ export const SideBar = ({
     <aside
       ref={sidebarRef}
       className={cn(
-        'w-[300px] mt-2 h-[100vh + 10px] overflow-y-auto  overflow-x-hidden transition-all duration-300 ease-out',
+        'w-[300px] mt-2 h-[100vh + 10px] overflow-y-auto  overflow-x-hidden transition-all duration-200 ease-linear',
         {
           'translate-x-[-100%]': !showSideBar,
           'translate-x-0': showSideBar,
-          'w-0': !showSideBar,
           'p-0': !showSideBar,
-          'p-2': showSideBar
+          'p-2': showSideBar,
+          'w-0': !showSideBar,
+          'translate-y-2': !showSideBar
         },
         className
       )}
