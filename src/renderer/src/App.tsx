@@ -45,11 +45,13 @@ const App = () => {
   }
 
   const handleShowBookMarks = () => {
-    setShowBookmarks((prev) => !prev)
+    setShowBookmarks(true)
+    setShowFiles(false)
   }
 
   const handleShowFiles = () => {
-    setShowFiles((prev) => !prev)
+    setShowFiles(true)
+    setShowBookmarks(false)
   }
 
   const handleOpenLink = (event: React.MouseEvent) => {
@@ -99,7 +101,7 @@ const App = () => {
           <ActionButtonsRow
             onCreateEmptyNote={handleCreation}
             onDeleteNote={handleDeleteNote}
-            className="flex justify-between mt-2"
+            className="flex justify-center gap-2 mt-2"
           />
           <SearchBar
             onInputChange={handleSearchNote}

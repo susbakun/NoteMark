@@ -8,7 +8,7 @@ type DeleteButtonProps = {
 export const DeleteButton = ({ onDeleteNote, ...props }: DeleteButtonProps) => {
   return (
     <ActionButton title="Delete the Note" onClick={onDeleteNote} {...props}>
-      <FaRegTrashCan className="w-5 h-5 text-zinc-300" />
+      <FaRegTrashCan className="w-5 h-[18px] text-zinc-300/80" />
     </ActionButton>
   )
 }

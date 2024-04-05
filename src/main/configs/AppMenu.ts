@@ -116,9 +116,7 @@ export const createApplicationMenu = () => {
         {
           label: `About ${name}`,
           accelerator: '',
-          click() {
-            //
-          }
+          role: 'about'
         },
         { type: 'separator' },
         {

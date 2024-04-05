@@ -15,9 +15,12 @@ export const FileButton = ({ onShowFilesButtonClick, showFiles }: FileButtonProp
       title="Show Files"
     >
       <GoFileDirectory
-        className={cn('w-5 h-[18px] transition-colors duration-150 ease-in font-bold text-white', {
-          'text-white': showFiles
-        })}
+        className={cn(
+          'w-5 h-[18px] transition-colors duration-150 ease-in font-bold text-zinc-300/80',
+          {
+            'text-white': showFiles
+          }
+        )}
       />
     </ActionButton>
   )

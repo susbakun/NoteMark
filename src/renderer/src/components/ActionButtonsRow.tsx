@@ -1,4 +1,4 @@
-import { DeleteButton, NewNoteButton } from '@/components'
+import { DeleteButton, NewDirectoryButton, NewNoteButton, SortButton } from '@/components'
 import { ComponentProps } from 'react'
 
 type ActionButtonRow = ComponentProps<'div'> & {
@@ -14,6 +14,8 @@ export const ActionButtonsRow = ({
   return (
     <div {...props}>
       <NewNoteButton onCreateEmptyNote={onCreateEmptyNote} />
+      <NewDirectoryButton />
+      <SortButton />
       <DeleteButton onDeleteNote={onDeleteNote} />
     </div>
   )

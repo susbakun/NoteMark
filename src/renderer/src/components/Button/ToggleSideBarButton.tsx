@@ -21,7 +21,7 @@ export const ToggleSideBarButton = ({
       onClick={toggleSideBar}
       {...props}
     >
-      <LuPanelLeftClose className="text-zinc-300 w-5 h-[18px]" />
+      <LuPanelLeftClose className="text-zinc-300/80 w-5 h-[18px]" />
     </ActionButton>
   )
 }
