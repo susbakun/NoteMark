@@ -71,6 +71,10 @@ const App = () => {
     await deleteNote()
   }
 
+  const handleSortNotes = () => {
+    window.context.sortNotes()
+  }
+
   const handleContextMenu = () => {
     window.context.showContextMenu()
   }
@@ -100,6 +104,7 @@ const App = () => {
         <SideBar onDeleteNote={handleDeleteNote} showSideBar={showSideBar}>
           <ActionButtonsRow
             onCreateEmptyNote={handleCreation}
+            onSortNotes={handleSortNotes}
             onDeleteNote={handleDeleteNote}
             className="flex justify-center gap-2 mt-2"
           />

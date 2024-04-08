@@ -1,6 +1,7 @@
 import { createContextMenu } from '@/configs/AppContextMenu'
 import { createApplicationMenu } from '@/configs/AppMenu'
 import { createSideBarContextMenu } from '@/configs/SideBarContextMenu'
+import { sortButtonContextMenu } from '@/configs/SortButtonContextMenu'
 import { appDirectoryName, fileEncoding, welcomeNoteFilename } from '@shared/constants'
 import { NoteInfo } from '@shared/models'
 import {
@@ -12,6 +13,7 @@ import {
   ShowContextMenu,
   ShowFile,
   ShowSideBarContextMenu,
+  ShowSortNotesContextMenu,
   WriteNote
 } from '@shared/types'
 import { BrowserWindow, dialog, shell } from 'electron'
@@ -151,6 +153,11 @@ export const showContextMenu: ShowContextMenu = () => {
 }
 
 export const showSideBarContextMenu: ShowSideBarContextMenu = () => {
-  const sidebarCn = createSideBarContextMenu()
-  sidebarCn.popup()
+  const sidebarCN = createSideBarContextMenu()
+  sidebarCN.popup()
+}
+
+export const showSortNotesContextMenu: ShowSortNotesContextMenu = () => {
+  const sortButtonCN = sortButtonContextMenu()
+  sortButtonCN.popup()
 }

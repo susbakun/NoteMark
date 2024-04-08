@@ -7,6 +7,7 @@ import {
   showContextMenu,
   showFile,
   showSideBarContextMenu,
+  showSortNotesContextMenu,
   writeNote
 } from '@/lib'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
@@ -19,6 +20,7 @@ import {
   ShowContextMenu,
   ShowFile,
   ShowSideBarContextMenu,
+  ShowSortNotesContextMenu,
   WriteNote
 } from '@shared/types'
 import { app, BrowserWindow, globalShortcut, ipcMain, shell } from 'electron'
@@ -94,6 +96,9 @@ app.whenReady().then(() => {
   ipcMain.handle('deleteNote', (_, ...args: Parameters<DeleteNote>) => deleteNote(...args))
   ipcMain.handle('openLink', (_, ...args: Parameters<OpenLink>) => openLink(...args))
   ipcMain.handle('showFile', (_, ...args: Parameters<ShowFile>) => showFile(...args))
+  ipcMain.handle('sortNotes', (_, ...args: Parameters<ShowSortNotesContextMenu>) =>
+    showSortNotesContextMenu(...args)
+  )
   ipcMain.handle('showContextMenu', (_, ...args: Parameters<ShowContextMenu>) =>
     showContextMenu(...args)
   )

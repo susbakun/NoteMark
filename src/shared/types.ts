@@ -13,3 +13,4 @@ export type Initialization = (
 export type ShowFile = (filePath: NoteInfo['title']) => void
 export type ShowContextMenu = () => void
 export type ShowSideBarContextMenu = () => void
+export type ShowSortNotesContextMenu = () => void

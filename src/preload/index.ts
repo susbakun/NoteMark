@@ -8,6 +8,7 @@ import {
   ReadNote,
   ShowContextMenu,
   ShowSideBarContextMenu,
+  SortNotes,
   WriteNote
 } from '@shared/types'
 import { contextBridge, ipcRenderer } from 'electron'
@@ -24,6 +25,7 @@ try {
     writeNote: (...args: Parameters<WriteNote>) => ipcRenderer.invoke('writeNote', ...args),
     createNote: (...args: Parameters<CreateNote>) => ipcRenderer.invoke('createNote', ...args),
     deleteNote: (...args: Parameters<DeleteNote>) => ipcRenderer.invoke('deleteNote', ...args),
+    sortNotes: (...args: Parameters<SortNotes>) => ipcRenderer.invoke('sortNotes', ...args),
     showContextMenu: (...args: Parameters<ShowContextMenu>) =>
       ipcRenderer.invoke('showContextMenu', ...args),
     showSideBarContextMenu: (...args: Parameters<ShowSideBarContextMenu>) =>
