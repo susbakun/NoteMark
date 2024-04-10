@@ -14,7 +14,6 @@
     @apply bg-transparent;
     @apply font-mono antialiased text-white;
     @apply overflow-hidden;
-    @apply pt-[19.6px];
   }
 
   header {

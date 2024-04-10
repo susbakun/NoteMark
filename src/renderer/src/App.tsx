@@ -9,9 +9,10 @@ import {
   SideBar
 } from '@/components'
 import { SearchBar } from '@/components/SearchBar'
-import { createEmptyNoteAtom, deleteNoteAtom, selectedNoteIndexAtom } from '@/store'
+import { createEmptyNoteAtom, deleteNoteAtom, notesAtom, selectedNoteIndexAtom } from '@/store'
 import { checkIfNodeIsAnchor, getParentNode } from '@/utils'
-import { useSetAtom } from 'jotai'
+import { SortFunction } from '@shared/types'
+import { useAtom, useSetAtom } from 'jotai'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 
 const App = () => {
@@ -26,6 +27,7 @@ const App = () => {
   const setSelectedNoteIndex = useSetAtom(selectedNoteIndexAtom)
   const createEmptyNote = useSetAtom(createEmptyNoteAtom)
   const deleteNote = useSetAtom(deleteNoteAtom)
+  const [notes, setNotes] = useAtom(notesAtom)
 
   const resetScroll = () => {
     contentContainerRef.current?.scrollTo(0, 0)
@@ -71,11 +73,15 @@ const App = () => {
     await deleteNote()
   }
 
-  const handleSortNotes = () => {
+  const handleSortNotesContextMenu = () => {
     window.context.sortNotes()
   }
 
-  const handleContextMenu = () => {
+  const handleSortNotes = (sortFunction: SortFunction) => {
+    if (notes) setNotes(sortFunction(notes))
+  }
+
+  const handleEditorContextMenu = () => {
     window.context.showContextMenu()
   }
 
@@ -85,8 +91,8 @@ const App = () => {
   }
 
   useEffect(() => {
-    window.context.initilization(handleCreation, handleDeleteNote)
-  }, [])
+    window.context.initilization(handleCreation, handleDeleteNote, handleSortNotes)
+  }, [notes])
 
   return (
     <>
@@ -104,7 +110,7 @@ const App = () => {
         <SideBar onDeleteNote={handleDeleteNote} showSideBar={showSideBar}>
           <ActionButtonsRow
             onCreateEmptyNote={handleCreation}
-            onSortNotes={handleSortNotes}
+            onSortNotes={handleSortNotesContextMenu}
             onDeleteNote={handleDeleteNote}
             className="flex justify-center gap-2 mt-2"
           />
@@ -128,7 +134,7 @@ const App = () => {
           className="relative pt-3 bg-zinc-900/50 border-l-white/20"
         >
           <NoteTopBar className="flex justify-between items-center ml-1  pt-1 w-full max-w-full px-4" />
-          <MarkdownEditor onContextMenu={handleContextMenu} />
+          <MarkdownEditor onContextMenu={handleEditorContextMenu} />
         </Content>
       </RootLayout>
     </>
