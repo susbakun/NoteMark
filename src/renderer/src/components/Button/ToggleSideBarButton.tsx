@@ -1,5 +1,5 @@
 import { ComponentProps } from 'react'
-import { LuPanelLeftClose } from 'react-icons/lu'
+import { TbLayoutSidebar } from 'react-icons/tb'
 import { ActionButton } from './ActionButton'
 
 type ToggleSideBarButtonProps = ComponentProps<'button'> & {
@@ -21,7 +21,7 @@ export const ToggleSideBarButton = ({
       onClick={toggleSideBar}
       {...props}
     >
-      <LuPanelLeftClose className="text-zinc-300/80 w-5 h-[18px]" />
+      <TbLayoutSidebar className="text-zinc-300/80 w-5 h-5" />
     </ActionButton>
   )
 }

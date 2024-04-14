@@ -1,6 +1,6 @@
 import { ComponentProps } from 'react'
-import { ActionButton } from './Button'
-import { BookmarkButton } from './Button/BookmarkButton'
+import { ActionButton, BookmarkButton } from './Button'
+
 import { FloatingNoteTitle } from './FloatingNoteTitle'
 
 type ToggleSideBarAndBookMarkRowProps = ComponentProps<'div'>

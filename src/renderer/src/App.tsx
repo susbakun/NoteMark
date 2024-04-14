@@ -6,14 +6,13 @@ import {
   NotePreviewList,
   NoteTopBar,
   RootLayout,
+  SearchBar,
   SideBar
 } from '@/components'
-import { SearchBar } from '@/components/SearchBar'
-import { createEmptyNoteAtom, deleteNoteAtom, notesAtom, selectedNoteIndexAtom } from '@/store'
 import { checkIfNodeIsAnchor, getParentNode } from '@/utils'
 import { SortFunction } from '@shared/types'
-import { useAtom, useSetAtom } from 'jotai'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
+import { useNotesList } from './hooks/useNotesList'
 
 const App = () => {
   const contentContainerRef = useRef<HTMLDivElement>(null)
@@ -24,10 +23,8 @@ const App = () => {
   const [searched, setSearched] = useState('')
   const [showFiles, setShowFiles] = useState(true)
 
-  const setSelectedNoteIndex = useSetAtom(selectedNoteIndexAtom)
-  const createEmptyNote = useSetAtom(createEmptyNoteAtom)
-  const deleteNote = useSetAtom(deleteNoteAtom)
-  const [notes, setNotes] = useAtom(notesAtom)
+  const { notes, setNotes, selectedNoteIndex, setSelectedNoteIndex, createEmptyNote, deleteNote } =
+    useNotesList({})
 
   const resetScroll = () => {
     contentContainerRef.current?.scrollTo(0, 0)
@@ -78,6 +75,7 @@ const App = () => {
   }
 
   const handleSortNotes = (sortFunction: SortFunction) => {
+    setSelectedNoteIndex(null)
     if (notes) setNotes(sortFunction(notes))
   }
 
@@ -92,7 +90,7 @@ const App = () => {
 
   useEffect(() => {
     window.context.initilization(handleCreation, handleDeleteNote, handleSortNotes)
-  }, [notes])
+  }, [notes, setSelectedNoteIndex, selectedNoteIndex])
 
   return (
     <>

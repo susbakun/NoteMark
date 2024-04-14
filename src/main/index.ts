@@ -56,6 +56,8 @@ export function createWindow(): BrowserWindow {
     mainWindow.show()
   })
 
+  mainWindow.on('closed', () => {})
+
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
     return { action: 'deny' }

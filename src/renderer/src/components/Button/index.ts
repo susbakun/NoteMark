@@ -1,4 +1,5 @@
 export * from './ActionButton'
+export * from './BookmarkButton'
 export * from './DeleteButton'
 export * from './FileButton'
 export * from './NewDirectoryButton'
