@@ -35,7 +35,7 @@ export const NotePreviewList = ({
   let filteredNotes = filterNotes(notes, searched)
 
   if (showBookmarks) {
-    filteredNotes = getBookmarkedNotes(notes)
+    filteredNotes = getBookmarkedNotes(filteredNotes)
   }
 
   return (

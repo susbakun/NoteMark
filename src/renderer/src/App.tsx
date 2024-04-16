@@ -40,6 +40,9 @@ const App = () => {
   }
 
   const handleCloseSearchBar = () => {
+    if (searchClicked) {
+      setSearched('')
+    }
     setSearchClicked((prev) => !prev)
   }
 
@@ -110,7 +113,8 @@ const App = () => {
             onCreateEmptyNote={handleCreation}
             onSortNotes={handleSortNotesContextMenu}
             onDeleteNote={handleDeleteNote}
-            className="flex justify-center gap-2 mt-2"
+            showSearchBar={searchClicked}
+            className="flex justify-center gap-2 mt-2 mb-2"
           />
           <SearchBar
             onInputChange={handleSearchNote}
@@ -129,7 +133,7 @@ const App = () => {
           ref={contentContainerRef}
           onClick={handleOpenLink}
           showSideBar={showSideBar}
-          className="relative pt-3 bg-zinc-900/50 border-l-white/20"
+          className="relative pt-3 bg-zinc-900/50 border-l-white/20 text-justify"
         >
           <NoteTopBar className="flex justify-between items-center ml-1  pt-1 w-full max-w-full px-4" />
           <MarkdownEditor onContextMenu={handleEditorContextMenu} />

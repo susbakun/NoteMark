@@ -17,7 +17,7 @@ export const BookmarkButton = () => {
 
   return (
     <ActionButton
-      direction="left"
+      direction="bottom-end"
       onClick={handleBookMarkNote}
       title={isBookMarked ? 'UnBookmark the Note' : 'Bookmark the Note'}
     >

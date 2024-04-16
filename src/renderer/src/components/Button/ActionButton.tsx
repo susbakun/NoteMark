@@ -5,7 +5,7 @@ import { roundArrow } from 'tippy.js'
 import 'tippy.js/dist/svg-arrow.css'
 
 export type ActionButtonProps = ComponentProps<'button'> & {
-  direction?: 'top' | 'bottom' | 'left' | 'right'
+  direction?: 'top' | 'bottom' | 'left' | 'right' | 'bottom-end' | 'top-end'
 }
 
 export const ActionButton = ({
