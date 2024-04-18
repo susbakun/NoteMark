@@ -43,9 +43,11 @@ try {
         handleCreation()
       })
 
-      ipcRenderer.on('showFile', () => {
-        ipcRenderer.invoke('showFile')
-      })
+      if (!ipcRenderer.listenerCount('showFile')) {
+        ipcRenderer.on('showFile', () => {
+          ipcRenderer.invoke('showFile')
+        })
+      }
 
       ipcRenderer.on('deleteNote', () => {
         const handleDeleteNote = args[1]

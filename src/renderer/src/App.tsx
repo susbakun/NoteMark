@@ -22,6 +22,7 @@ const App = () => {
   const [showBookmarks, setShowBookmarks] = useState(false)
   const [searched, setSearched] = useState('')
   const [showFiles, setShowFiles] = useState(true)
+  const [isInitilized, setIsInitilized] = useState(false)
 
   const { notes, setNotes, selectedNoteIndex, setSelectedNoteIndex, createEmptyNote, deleteNote } =
     useNotesList({})
@@ -92,8 +93,11 @@ const App = () => {
   }
 
   useEffect(() => {
-    window.context.initilization(handleCreation, handleDeleteNote, handleSortNotes)
-  }, [notes, setSelectedNoteIndex, selectedNoteIndex])
+    if (!isInitilized && notes) {
+      setIsInitilized(true)
+      window.context.initilization(handleCreation, handleDeleteNote, handleSortNotes)
+    }
+  }, [notes])
 
   return (
     <>

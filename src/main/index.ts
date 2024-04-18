@@ -23,7 +23,7 @@ import {
   ShowSortNotesContextMenu,
   WriteNote
 } from '@shared/types'
-import { app, BrowserWindow, globalShortcut, ipcMain, shell } from 'electron'
+import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
 import { createApplicationMenu } from './configs/AppMenu'
@@ -40,7 +40,7 @@ export function createWindow(): BrowserWindow {
     ...(process.platform === 'linux' ? { icon } : {}),
     center: true,
     title: 'NoteMark',
-    vibrancy: 'under-window',
+    vibrancy: 'fullscreen-ui',
     titleBarStyle: 'hidden',
     trafficLightPosition: { x: 15, y: 13 },
     frame: false,
@@ -111,14 +111,6 @@ app.whenReady().then(() => {
   const mainWindow = createWindow()
 
   createApplicationMenu()
-
-  const changeReadOnlyMode = globalShortcut.register('CommandOrControl+Alt+P', () =>
-    mainWindow.webContents.send('changeReadOnlyMode')
-  )
-
-  if (!changeReadOnlyMode) {
-    console.info('The changeReadOnlyMode shortcut not registered successfully!')
-  }
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

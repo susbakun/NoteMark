@@ -65,7 +65,6 @@ export const readNote: ReadNote = async (filename) => {
   const rootDir = getRootDir()
 
   const window = BrowserWindow.getFocusedWindow()
-  const filePath = `${rootDir}/${filename}.md`
   window?.setRepresentedFilename(filename)
   createApplicationMenu()
 

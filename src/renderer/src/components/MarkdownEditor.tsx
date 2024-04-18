@@ -2,7 +2,6 @@ import {
   codeBlockPlugin,
   codeMirrorPlugin,
   headingsPlugin,
-  imagePlugin,
   linkPlugin,
   listsPlugin,
   markdownShortcutPlugin,
@@ -36,7 +35,6 @@ export const MarkdownEditor = ({ onContextMenu }: ComponentProps<'div'>) => {
             theme: 'dark',
             codeBlockLanguages: { js: 'JavaScript', css: 'CSS' }
           }),
-          imagePlugin(),
           linkPlugin(),
           markdownShortcutPlugin()
         ]}
