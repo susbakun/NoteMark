@@ -27,6 +27,7 @@ import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
 import { createApplicationMenu } from './configs/AppMenu'
+import { createApplicationTouchBar } from './configs/AppTouchBar'
 
 export function createWindow(): BrowserWindow {
   // Create the browser window.
@@ -111,6 +112,8 @@ app.whenReady().then(() => {
   const mainWindow = createWindow()
 
   createApplicationMenu()
+  const touchBar = createApplicationTouchBar(mainWindow)
+  mainWindow.setTouchBar(touchBar)
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
