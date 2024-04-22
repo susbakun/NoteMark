@@ -1,6 +1,5 @@
 import { NotePreview } from '@/components'
 import { useNotesList } from '@renderer/hooks/useNotesList'
-import { filterNotes, getBookmarkedNotes } from '@renderer/utils'
 import { isEmpty } from 'lodash'
 import { ComponentProps } from 'react'
 import { twMerge } from 'tailwind-merge'
@@ -20,7 +19,8 @@ export const NotePreviewList = ({
   className,
   ...props
 }: NotePreviewListProps) => {
-  const { notes, selectedNoteIndex, handleNoteSelect } = useNotesList({ onSelect })
+  const { notes, selectedNoteIndex, handleNoteSelect, getBookmarkedNotes, filterNotes } =
+    useNotesList({ onSelect })
 
   if (!notes) return null
 

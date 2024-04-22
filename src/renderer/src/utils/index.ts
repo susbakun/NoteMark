@@ -1,4 +1,3 @@
-import { NoteInfo } from '@shared/models'
 import clsx, { ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -24,14 +23,6 @@ export const checkIfNodeIsAnchor = (node: HTMLElement | null): boolean => {
     node instanceof HTMLSpanElement &&
     getParentNode(node) instanceof HTMLAnchorElement
   )
-}
-
-export const filterNotes = (notes: NoteInfo[], searched: string): NoteInfo[] => {
-  return notes.filter((note) => note.title.toLowerCase().includes(searched.toLowerCase()))
-}
-
-export const getBookmarkedNotes = (notes: NoteInfo[]): NoteInfo[] => {
-  return notes.filter((note) => note.bookmarked)
 }
 
 export const hasFocus = (element: HTMLElement) => {

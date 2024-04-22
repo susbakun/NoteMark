@@ -4,6 +4,7 @@ import {
   notesAtom,
   selectedNoteIndexAtom
 } from '@renderer/store'
+import { NoteInfo } from '@shared/models'
 import { useAtom, useSetAtom } from 'jotai'
 
 export const useNotesList = ({ onSelect }: { onSelect?: () => void }) => {
@@ -20,12 +21,22 @@ export const useNotesList = ({ onSelect }: { onSelect?: () => void }) => {
     }
   }
 
+  const filterNotes = (notes: NoteInfo[], searched: string): NoteInfo[] => {
+    return notes.filter((note) => note.title.toLowerCase().includes(searched.toLowerCase()))
+  }
+
+  const getBookmarkedNotes = (notes: NoteInfo[]): NoteInfo[] => {
+    return notes.filter((note) => note.bookmarked)
+  }
+
   return {
     notes,
     setNotes,
     selectedNoteIndex,
     setSelectedNoteIndex,
     deleteNote,
+    filterNotes,
+    getBookmarkedNotes,
     createEmptyNote,
     handleNoteSelect
   }
