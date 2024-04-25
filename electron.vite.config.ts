@@ -18,7 +18,8 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()],
     resolve: {
       alias: {
-        '@/lib': resolve('src/preload/lib')
+        '@/lib': resolve('src/preload/lib'),
+        '@shared': resolve('src/shared')
       }
     }
   },

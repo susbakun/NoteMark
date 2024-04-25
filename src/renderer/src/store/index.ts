@@ -1,4 +1,6 @@
 import { NoteContent, NoteInfo } from '@shared/models'
+import { SortType } from '@shared/types'
+import { sortNotesSelector } from '@shared/utils'
 import { atom } from 'jotai'
 import { unwrap } from 'jotai/utils'
 import { isEmpty } from 'lodash'
@@ -57,6 +59,25 @@ export const selectedNoteAtom = unwrap(
     }
 )
 
+export const sortFunctionNameAtom = atom<SortType>('sortNotesFromNewToOld')
+
+export const sortNotesAtom = atom(null, (get, set) => {
+  const notes = get(notesAtom)
+  const selectedNoteIndex = get(selectedNoteIndexAtom)
+  if (!notes || selectedNoteIndex == null) return
+
+  const selectedNote = notes[selectedNoteIndex]
+
+  const sortFunctionName = get(sortFunctionNameAtom)
+  const sortFunction = sortNotesSelector(sortFunctionName)
+
+  const sortedNotes = sortFunction(notes)
+  const newIndexOfSelectedNote = sortedNotes.indexOf(selectedNote)
+
+  set(selectedNoteIndexAtom, newIndexOfSelectedNote)
+  set(notesAtom, sortedNotes)
+})
+
 export const saveNoteAtom = atom(null, async (get, set, newContent: NoteContent) => {
   const notes = get(notesAtom)
   const selectedNote = get(selectedNoteAtom)
@@ -95,8 +116,14 @@ export const createEmptyNoteAtom = atom(null, async (get, set) => {
     bookmarked: false
   }
 
-  set(notesAtom, [newNote, ...notes.filter((note) => note.title !== newNote.title)])
-  set(selectedNoteIndexAtom, 0)
+  const sortFunctionName = get(sortFunctionNameAtom)
+  const sortFunction = sortNotesSelector(sortFunctionName)
+
+  const newNotes = sortFunction([newNote, ...notes.filter((note) => note.title !== newNote.title)])
+  const indexOfNewNote = newNotes.indexOf(newNote)
+
+  set(notesAtom, newNotes)
+  set(selectedNoteIndexAtom, indexOfNewNote)
 })
 
 export const deleteNoteAtom = atom(null, async (get, set) => {
@@ -117,9 +144,12 @@ export const deleteNoteAtom = atom(null, async (get, set) => {
     }
   }
 
+  const sortFunctionName = get(sortFunctionNameAtom)
+  const sortFunction = sortNotesSelector(sortFunctionName)
+
   set(
     notesAtom,
-    notes.filter((note) => note.title !== selectedNote.title)
+    sortFunction(notes).filter((note) => note.title !== selectedNote.title)
   )
 
   set(selectedNoteIndexAtom, null)

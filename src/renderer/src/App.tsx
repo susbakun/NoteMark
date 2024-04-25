@@ -10,7 +10,7 @@ import {
   SideBar
 } from '@/components'
 import { checkIfNodeIsAnchor, getParentNode } from '@/utils'
-import { SortFunction } from '@shared/types'
+import { SortType } from '@shared/types'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { useNotesList } from './hooks/useNotesList'
 
@@ -24,8 +24,15 @@ const App = () => {
   const [showFiles, setShowFiles] = useState(true)
   const [isInitilized, setIsInitilized] = useState(false)
 
-  const { notes, setNotes, selectedNoteIndex, setSelectedNoteIndex, createEmptyNote, deleteNote } =
-    useNotesList({})
+  const {
+    notes,
+    sortNotes,
+    setSelectedNoteIndex,
+    createEmptyNote,
+    deleteNote,
+    sortFunctionName,
+    setSortFunctionName
+  } = useNotesList({})
 
   const resetScroll = () => {
     contentContainerRef.current?.scrollTo(0, 0)
@@ -78,9 +85,10 @@ const App = () => {
     window.context.sortNotes()
   }
 
-  const handleSortNotes = (sortFunction: SortFunction) => {
+  const handleSortNotes = (sortType: SortType) => {
     setSelectedNoteIndex(null)
-    if (notes) setNotes(sortFunction(notes))
+    setSortFunctionName(sortType)
+    if (notes) sortNotes()
   }
 
   const handleEditorContextMenu = () => {
@@ -137,7 +145,7 @@ const App = () => {
           ref={contentContainerRef}
           onClick={handleOpenLink}
           showSideBar={showSideBar}
-          className="relative pt-3 bg-zinc-900/50 border-l-white/20 text-justify"
+          className="relative pt-3 transition-all bg-zinc-900/50 border-l-white/20 text-justify"
         >
           <NoteTopBar className="flex justify-between items-center ml-1  pt-1 w-full max-w-full px-4" />
           <MarkdownEditor onContextMenu={handleEditorContextMenu} />

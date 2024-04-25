@@ -2,7 +2,9 @@ import {
   createEmptyNoteAtom,
   deleteNoteAtom,
   notesAtom,
-  selectedNoteIndexAtom
+  selectedNoteIndexAtom,
+  sortFunctionNameAtom,
+  sortNotesAtom
 } from '@renderer/store'
 import { NoteInfo } from '@shared/models'
 import { useAtom, useSetAtom } from 'jotai'
@@ -12,6 +14,8 @@ export const useNotesList = ({ onSelect }: { onSelect?: () => void }) => {
   const [selectedNoteIndex, setSelectedNoteIndex] = useAtom(selectedNoteIndexAtom)
   const deleteNote = useSetAtom(deleteNoteAtom)
   const createEmptyNote = useSetAtom(createEmptyNoteAtom)
+  const [sortFunctionName, setSortFunctionName] = useAtom(sortFunctionNameAtom)
+  const sortNotes = useSetAtom(sortNotesAtom)
 
   const handleNoteSelect = (index: number) => async () => {
     setSelectedNoteIndex(index)
@@ -31,13 +35,15 @@ export const useNotesList = ({ onSelect }: { onSelect?: () => void }) => {
 
   return {
     notes,
-    setNotes,
+    sortNotes,
     selectedNoteIndex,
     setSelectedNoteIndex,
     deleteNote,
     filterNotes,
     getBookmarkedNotes,
     createEmptyNote,
+    sortFunctionName,
+    setSortFunctionName,
     handleNoteSelect
   }
 }

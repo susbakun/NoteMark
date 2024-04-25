@@ -11,12 +11,6 @@ import {
   WriteNote
 } from '@shared/types'
 import { contextBridge, ipcRenderer } from 'electron'
-import {
-  sortNotesFromAToZ,
-  sortNotesFromNewToOld,
-  sortNotesFromOldToNew,
-  sortNotesFromZToA
-} from './lib'
 
 if (!process.contextIsolated) {
   throw new Error('contextIsolation must be enabled in the BrowserWindow')
@@ -56,22 +50,22 @@ try {
 
       ipcRenderer.on('sortNotes:AToZ', () => {
         const handleSortNotes = args[2]
-        handleSortNotes(sortNotesFromAToZ)
+        handleSortNotes('sortNotesFromAToZ')
       })
 
       ipcRenderer.on('sortNotes:ZToA', () => {
         const handleSortNotes = args[2]
-        handleSortNotes(sortNotesFromZToA)
+        handleSortNotes('sortNotesFromZToA')
       })
 
       ipcRenderer.on('sortNotes:NewToOld', () => {
         const handleSortNotes = args[2]
-        handleSortNotes(sortNotesFromNewToOld)
+        handleSortNotes('sortNotesFromNewToOld')
       })
 
       ipcRenderer.on('sortNotes:OldToNew', () => {
         const handleSortNotes = args[2]
-        handleSortNotes(sortNotesFromOldToNew)
+        handleSortNotes('sortNotesFromOldToNew')
       })
     }
   })

@@ -9,10 +9,15 @@ export type OpenLink = (link: string) => Promise<void>
 export type Initialization = (
   handleCreation: () => Promise<void>,
   handleDeleteNote: () => Promise<void>,
-  handleSortNotes: (sortFunction: SortFunction) => void
+  handleSortNotes: (sortType: SortType) => void
 ) => void
 export type ShowFile = (filePath: NoteInfo['title']) => void
 export type ShowContextMenu = () => void
 export type ShowSideBarContextMenu = () => void
 export type ShowSortNotesContextMenu = () => void
 export type SortFunction = (notes: NoteInfo[]) => NoteInfo[]
+export type SortType =
+  | 'sortNotesFromAToZ'
+  | 'sortNotesFromZToA'
+  | 'sortNotesFromNewToOld'
+  | 'sortNotesFromOldToNew'
