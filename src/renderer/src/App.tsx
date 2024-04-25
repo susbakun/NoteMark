@@ -88,6 +88,7 @@ const App = () => {
   const handleSortNotes = (sortType: SortType) => {
     setSelectedNoteIndex(null)
     setSortFunctionName(sortType)
+    console.log(sortType)
     if (notes) sortNotes()
   }
 

@@ -64,18 +64,20 @@ export const sortFunctionNameAtom = atom<SortType>('sortNotesFromNewToOld')
 export const sortNotesAtom = atom(null, (get, set) => {
   const notes = get(notesAtom)
   const selectedNoteIndex = get(selectedNoteIndexAtom)
-  if (!notes || selectedNoteIndex == null) return
 
-  const selectedNote = notes[selectedNoteIndex]
+  if (!notes) return
 
   const sortFunctionName = get(sortFunctionNameAtom)
   const sortFunction = sortNotesSelector(sortFunctionName)
 
   const sortedNotes = sortFunction(notes)
-  const newIndexOfSelectedNote = sortedNotes.indexOf(selectedNote)
-
-  set(selectedNoteIndexAtom, newIndexOfSelectedNote)
   set(notesAtom, sortedNotes)
+
+  if (selectedNoteIndex == null) return
+
+  const selectedNote = notes[selectedNoteIndex]
+  const newIndexOfSelectedNote = sortedNotes.indexOf(selectedNote)
+  set(selectedNoteIndexAtom, newIndexOfSelectedNote)
 })
 
 export const saveNoteAtom = atom(null, async (get, set, newContent: NoteContent) => {
