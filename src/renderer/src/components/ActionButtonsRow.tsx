@@ -20,7 +20,7 @@ export const ActionButtonsRow = ({
   return (
     <div
       className={cn(
-        'transition-opacity duration-200 linear',
+        'transition-opacity duration-200 linear flex justify-center',
         {
           'translate-x-[100%]': showSearchBar,
           'opacity-0': showSearchBar,

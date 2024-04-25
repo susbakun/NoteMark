@@ -67,16 +67,19 @@ export const sortNotesAtom = atom(null, (get, set) => {
 
   if (!notes) return
 
+  const unOrderedNotes = [...notes]
+
   const sortFunctionName = get(sortFunctionNameAtom)
   const sortFunction = sortNotesSelector(sortFunctionName)
 
   const sortedNotes = sortFunction(notes)
+
   set(notesAtom, sortedNotes)
 
   if (selectedNoteIndex == null) return
+  const selectedNote = unOrderedNotes[selectedNoteIndex]
 
-  const selectedNote = notes[selectedNoteIndex]
-  const newIndexOfSelectedNote = sortedNotes.indexOf(selectedNote)
+  const newIndexOfSelectedNote = sortedNotes.findIndex((note) => note.title === selectedNote.title)
   set(selectedNoteIndexAtom, newIndexOfSelectedNote)
 })
 

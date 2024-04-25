@@ -9,10 +9,10 @@ import {
   SearchBar,
   SideBar
 } from '@/components'
+import { useNotesList } from '@/hooks/useNotesList'
 import { checkIfNodeIsAnchor, getParentNode } from '@/utils'
 import { SortType } from '@shared/types'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
-import { useNotesList } from './hooks/useNotesList'
 
 const App = () => {
   const contentContainerRef = useRef<HTMLDivElement>(null)
@@ -30,7 +30,6 @@ const App = () => {
     setSelectedNoteIndex,
     createEmptyNote,
     deleteNote,
-    sortFunctionName,
     setSortFunctionName
   } = useNotesList({})
 
@@ -127,7 +126,7 @@ const App = () => {
             onSortNotes={handleSortNotesContextMenu}
             onDeleteNote={handleDeleteNote}
             showSearchBar={searchClicked}
-            className="flex justify-center gap-2 mt-2 mb-2"
+            className="gap-2 mt-2 mb-2"
           />
           <SearchBar
             onInputChange={handleSearchNote}
@@ -146,9 +145,9 @@ const App = () => {
           ref={contentContainerRef}
           onClick={handleOpenLink}
           showSideBar={showSideBar}
-          className="relative pt-3 transition-all bg-zinc-900/50 border-l-white/20 text-justify"
+          className="relative pt-3 bg-zinc-900/50 border-l-white/20"
         >
-          <NoteTopBar className="flex justify-between items-center ml-1  pt-1 w-full max-w-full px-4" />
+          <NoteTopBar className="ml-1 pt-1 px-4" />
           <MarkdownEditor onContextMenu={handleEditorContextMenu} />
         </Content>
       </RootLayout>

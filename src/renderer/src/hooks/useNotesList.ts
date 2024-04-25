@@ -7,10 +7,10 @@ import {
   sortNotesAtom
 } from '@renderer/store'
 import { NoteInfo } from '@shared/models'
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 
 export const useNotesList = ({ onSelect }: { onSelect?: () => void }) => {
-  const [notes, setNotes] = useAtom(notesAtom)
+  const notes = useAtomValue(notesAtom)
   const [selectedNoteIndex, setSelectedNoteIndex] = useAtom(selectedNoteIndexAtom)
   const deleteNote = useSetAtom(deleteNoteAtom)
   const createEmptyNote = useSetAtom(createEmptyNoteAtom)

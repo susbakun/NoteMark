@@ -71,7 +71,7 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>(
         onClick={onClick}
         ref={ref}
         className={cn(
-          'flex-1 transition-all duration-150 ease-in overflow-y-auto overflow-x-hidden',
+          'flex-1 transition-all duration-150 ease-in overflow-y-auto overflow-x-hidden text-justify',
           { 'border-l': showSideBar, 'border-l-0': !showSideBar },
           className
         )}
