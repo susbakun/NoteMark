@@ -136,9 +136,9 @@ const App = () => {
           <NotePreviewList
             showBookmarks={showBookmarks}
             searched={searched}
-            className="mt-3 space-y-1"
             onSelect={resetScroll}
             onSidebarContextMenu={handleSideBarContextMenu}
+            className="mt-3 space-y-1"
           />
         </SideBar>
         <Content

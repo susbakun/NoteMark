@@ -44,7 +44,7 @@ export const SideBar = ({
       className={cn(
         'w-[300px] mt-2 h-[100vh + 10px] overflow-y-auto  overflow-x-hidden transition-all duration-200 ease-linear',
         {
-          'translate-x-[-100%]': !showSideBar,
+          'translate-x-[-200%]': !showSideBar,
           'translate-x-0': showSideBar,
           'p-0': !showSideBar,
           'p-2': showSideBar,
