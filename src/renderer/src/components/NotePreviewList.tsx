@@ -40,10 +40,11 @@ export const NotePreviewList = ({
 
   return (
     <ul className={twMerge('transition-all duration-200 ease-out', className)} {...props}>
-      {filteredNotes.map((note, index) => (
+      {notes.map((note, index) => (
         <NotePreview
           key={note.title + note.lastEditTime}
           isActive={selectedNoteIndex === index}
+          isHidden={filteredNotes.includes(note) ? false : true}
           onClick={handleNoteSelect(index)}
           onContextMenu={() => onSidebarContextMenu(index)}
           {...note}

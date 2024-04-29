@@ -5,14 +5,16 @@ import { BsBookmarkCheck } from 'react-icons/bs'
 
 export type NotePreviewProps = NoteInfo & {
   isActive?: boolean
+  isHidden: boolean
 } & ComponentProps<'div'>
 
 export const NotePreview = ({
+  isActive = false,
+  isHidden,
   title,
   content,
   lastEditTime,
   bookmarked,
-  isActive = false,
   className,
   ...props
 }: NotePreviewProps) => {
@@ -23,7 +25,8 @@ export const NotePreview = ({
         'cursor-pointer px-2.5 py-3 rounded-md transition-colors duration-75',
         {
           'bg-zinc-400/75': isActive,
-          'hover:bg-zinc-500/75': !isActive
+          'hover:bg-zinc-500/75': !isActive,
+          hidden: isHidden
         },
         className
       )}
