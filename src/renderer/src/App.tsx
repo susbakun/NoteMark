@@ -29,6 +29,7 @@ const App = () => {
     sortNotes,
     setSelectedNoteIndex,
     createEmptyNote,
+    createDir,
     deleteNote,
     setSortFunctionName
   } = useNotesList({})
@@ -72,8 +73,12 @@ const App = () => {
     }
   }
 
-  const handleCreation = async () => {
+  const handleFileCreation = async () => {
     await createEmptyNote()
+  }
+
+  const handleDirCreation = async () => {
+    await createDir()
   }
 
   const handleDeleteNote = async () => {
@@ -103,7 +108,7 @@ const App = () => {
   useEffect(() => {
     if (!isInitilized && notes) {
       setIsInitilized(true)
-      window.context.initilization(handleCreation, handleDeleteNote, handleSortNotes)
+      window.context.initilization(handleFileCreation, handleDeleteNote, handleSortNotes)
     }
   }, [notes])
 
@@ -122,7 +127,8 @@ const App = () => {
       <RootLayout>
         <SideBar onDeleteNote={handleDeleteNote} showSideBar={showSideBar}>
           <ActionButtonsRow
-            onCreateEmptyNote={handleCreation}
+            onCreateEmptyNote={handleFileCreation}
+            onCreateDir={handleDirCreation}
             onSortNotes={handleSortNotesContextMenu}
             onDeleteNote={handleDeleteNote}
             showSearchBar={searchClicked}

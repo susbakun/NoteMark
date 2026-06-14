@@ -1,4 +1,5 @@
 import {
+  createDir,
   createNote,
   deleteNote,
   getNotes,
@@ -12,6 +13,7 @@ import {
 } from '@/lib'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import {
+  CreateDir,
   CreateNote,
   DeleteNote,
   GetNotes,
@@ -86,6 +88,7 @@ app.whenReady().then(() => {
   ipcMain.handle('readNote', (_, ...args: Parameters<ReadNote>) => readNote(...args))
   ipcMain.handle('writeNote', (_, ...args: Parameters<WriteNote>) => writeNote(...args))
   ipcMain.handle('createNote', (_, ...args: Parameters<CreateNote>) => createNote(...args))
+  ipcMain.handle('createDir', (_, ...args: Parameters<CreateDir>) => createDir(...args))
   ipcMain.handle('deleteNote', (_, ...args: Parameters<DeleteNote>) => deleteNote(...args))
   ipcMain.handle('openLink', (_, ...args: Parameters<OpenLink>) => openLink(...args))
   ipcMain.handle('showFile', (_, ...args: Parameters<ShowFile>) => showFile(...args))

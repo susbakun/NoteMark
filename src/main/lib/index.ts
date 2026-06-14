@@ -147,6 +147,38 @@ export const showFile: ShowFile = () => {
   }
 }
 
+export const createDir = async () => {
+  const rootDir = getRootDir()
+  await ensureDir(rootDir)
+
+  const { filePath, canceled } = await dialog.showSaveDialog({
+    title: 'New Folder',
+    defaultPath: `${rootDir}`,
+    buttonLabel: 'Create',
+    properties: ['createDirectory']
+  })
+
+  if (canceled || !filePath) {
+    console.info(`Folder creation canceled`)
+    return false
+  }
+
+  const { name, dir } = path.parse(filePath)
+
+  if (dir !== rootDir) {
+    await dialog.showMessageBox({
+      type: 'error',
+      title: 'Creation failed',
+      message: `All folders must be saved under ${rootDir}.
+      Avoid using other directories!`
+    })
+    return false
+  }
+
+  console.info(`Creating folder: ${filePath}`)
+  return name
+}
+
 export const showContextMenu: ShowContextMenu = () => {
   const contextMenu = createContextMenu()
   contextMenu.popup()

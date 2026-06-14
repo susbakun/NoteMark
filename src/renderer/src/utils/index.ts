@@ -7,8 +7,6 @@ export const dateFormatter = new Intl.DateTimeFormat(window.context.locale, {
   timeZone: 'Asia/Tehran'
 })
 
-console.info(`locale: `, window.context.locale)
-
 export const formatDateFromMS = (ms: number) => dateFormatter.format(ms)
 
 export const cn = (...args: ClassValue[]) => {

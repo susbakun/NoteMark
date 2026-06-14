@@ -42,7 +42,8 @@ export const SideBar = ({
     <aside
       ref={sidebarRef}
       className={cn(
-        'w-[300px] mt-2 h-[100vh + 10px] overflow-y-auto  overflow-x-hidden transition-all duration-200 ease-linear',
+        'w-[300px] mt-2 h-[100vh + 10px] overflow-y-auto ease-linear',
+        'overflow-x-hidden transition-all duration-200',
         {
           'translate-x-[-200%]': !showSideBar,
           'translate-x-0': showSideBar,
@@ -71,7 +72,8 @@ export const Content = forwardRef<HTMLDivElement, ContentProps>(
         onClick={onClick}
         ref={ref}
         className={cn(
-          'flex-1 transition-all duration-150 ease-in overflow-y-auto overflow-x-hidden text-justify',
+          'flex-1 transition-all duration-150 ease-in',
+          'overflow-y-auto overflow-x-hidden text-justify',
           { 'border-l': showSideBar, 'border-l-0': !showSideBar },
           className
         )}

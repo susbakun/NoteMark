@@ -4,6 +4,7 @@ import { ComponentProps } from 'react'
 
 type ActionButtonRow = ComponentProps<'div'> & {
   onCreateEmptyNote: () => void
+  onCreateDir: () => void
   onDeleteNote: () => void
   onSortNotes: () => void
   showSearchBar: boolean
@@ -14,6 +15,7 @@ export const ActionButtonsRow = ({
   onDeleteNote,
   onCreateEmptyNote,
   onSortNotes,
+  onCreateDir,
   showSearchBar,
   ...props
 }: ActionButtonRow) => {
@@ -34,7 +36,7 @@ export const ActionButtonsRow = ({
       {...props}
     >
       <NewNoteButton onCreateEmptyNote={onCreateEmptyNote} />
-      <NewDirectoryButton />
+      <NewDirectoryButton onCreateDir={onCreateDir} />
       <SortButton onSortNotes={onSortNotes} />
       <DeleteButton onDeleteNote={onDeleteNote} />
     </div>

@@ -1,4 +1,5 @@
 import {
+  CreateDir,
   CreateNote,
   DeleteNote,
   GetNotes,
@@ -23,6 +24,7 @@ try {
     readNote: (...args: Parameters<ReadNote>) => ipcRenderer.invoke('readNote', ...args),
     writeNote: (...args: Parameters<WriteNote>) => ipcRenderer.invoke('writeNote', ...args),
     createNote: (...args: Parameters<CreateNote>) => ipcRenderer.invoke('createNote', ...args),
+    createDir: (...args: Parameters<CreateDir>) => ipcRenderer.invoke('createDir', ...args),
     deleteNote: (...args: Parameters<DeleteNote>) => ipcRenderer.invoke('deleteNote', ...args),
     sortNotes: (...args: Parameters<ShowSortNotesContextMenu>) =>
       ipcRenderer.invoke('sortNotes', ...args),

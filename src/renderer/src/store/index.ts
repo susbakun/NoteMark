@@ -160,6 +160,10 @@ export const deleteNoteAtom = atom(null, async (get, set) => {
   set(selectedNoteIndexAtom, null)
 })
 
+export const createDirAtom = atom(null, async (get, set) => {
+  await window.context.createDir()
+})
+
 export const bookmarkNoteAtom = atom(null, (get, set) => {
   const notes = get(notesAtom)
   const selectedNote = get(selectedNoteAtom)

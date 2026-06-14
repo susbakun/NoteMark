@@ -1,4 +1,5 @@
 import {
+  CreateDir,
   CreateNote,
   DeleteNote,
   GetNotes,
@@ -20,6 +21,7 @@ declare global {
       readNote: ReadNote
       writeNote: WriteNote
       createNote: CreateNote
+      createDir: CreateDir
       deleteNote: DeleteNote
       sortNotes: SortNotes
       openLink: OpenLink

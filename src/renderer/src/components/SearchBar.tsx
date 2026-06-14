@@ -36,8 +36,9 @@ export const SearchBar = ({
           autoFocus
           onChange={onInputChange}
           className={cn(
-            'bg-transparent border w-[200px] border-zinc-400/50 outline-none ease-in rounded-md px-1 py-0.5 ',
+            'bg-transparent border w-[200px] border-zinc-400/50',
             'caret-yellow-500 transition-all duration-300 ease-out',
+            'outline-none ease-in rounded-md px-1 py-0.5',
             {
               'opacity-0': !showSearchBar,
               'opacity-100': showSearchBar,

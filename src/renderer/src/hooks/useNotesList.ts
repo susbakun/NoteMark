@@ -1,4 +1,5 @@
 import {
+  createDirAtom,
   createEmptyNoteAtom,
   deleteNoteAtom,
   notesAtom,
@@ -14,6 +15,7 @@ export const useNotesList = ({ onSelect }: { onSelect?: () => void }) => {
   const [selectedNoteIndex, setSelectedNoteIndex] = useAtom(selectedNoteIndexAtom)
   const deleteNote = useSetAtom(deleteNoteAtom)
   const createEmptyNote = useSetAtom(createEmptyNoteAtom)
+  const createDir = useSetAtom(createDirAtom)
   const [sortFunctionName, setSortFunctionName] = useAtom(sortFunctionNameAtom)
   const sortNotes = useSetAtom(sortNotesAtom)
 
@@ -42,6 +44,7 @@ export const useNotesList = ({ onSelect }: { onSelect?: () => void }) => {
     filterNotes,
     getBookmarkedNotes,
     createEmptyNote,
+    createDir,
     sortFunctionName,
     setSortFunctionName,
     handleNoteSelect
