@@ -1,4 +1,5 @@
-import { appDirectoryName } from '@shared/constants'
+import { joinPath } from '@renderer/utils'
+import { appDirectoryName, homeDir } from '@shared/constants'
 import { DirectoryInfo, FileSystemItem, NoteContent, NoteInfo } from '@shared/models'
 import { SortType } from '@shared/types'
 import { sortNotesSelector } from '@shared/utils'
@@ -6,12 +7,8 @@ import { atom } from 'jotai'
 import { unwrap } from 'jotai/utils'
 import { isEmpty } from 'lodash'
 
-const joinPath = (p1: string, p2: string) => {
-  return p1 + '/' + p2
-}
-
 const getRootDir = () => {
-  return joinPath('/Users/amir', appDirectoryName)
+  return joinPath(homeDir, appDirectoryName)
 }
 
 const getFileTree = async () => {
@@ -114,7 +111,7 @@ export const createEmptyNoteAtom = atom(null, async (get, set) => {
   const files = get(fileTreeAtom)
 
   if (!files) return
-  const parentRelativePath = get(selectedDirPathAtom) ?? getRootDir()
+  const parentRelativePath = get(selectedDirPathAtom) ?? ''
 
   const name = await window.context.createNote(parentRelativePath)
 
@@ -154,9 +151,9 @@ export const deleteFileAtom = atom(null, async (get, set) => {
   if (!isDeleted) return
 
   if (localStorage.getItem('bookmarks')) {
-    const bookmarks: string[] = JSON.parse(localStorage.getItem('bookmarks')!)
+    let bookmarks: string[] = JSON.parse(localStorage.getItem('bookmarks')!)
     if (bookmarks.includes(selectedNote.relativePath)) {
-      bookmarks.filter((bookmark) => bookmark !== selectedNote.relativePath)
+      bookmarks = bookmarks.filter((bookmark) => bookmark !== selectedNote.relativePath)
       localStorage.setItem('bookmarks', JSON.stringify(bookmarks))
     }
   }
@@ -177,7 +174,7 @@ export const createDirAtom = atom(null, async (get, set) => {
 
   if (!files) return
 
-  const parentRelativePath = get(selectedDirPathAtom) ?? getRootDir()
+  const parentRelativePath = get(selectedDirPathAtom) ?? ''
   const name = await window.context.createDir(parentRelativePath)
 
   if (!name) return

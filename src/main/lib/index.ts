@@ -120,7 +120,14 @@ export const deleteFile: DeleteFile = async (relativePath, type) => {
 
   console.info('Deleting file', relativePath)
 
-  const filePath = resolveNotePath(relativePath)
+  let absolutePath: string
+  if (type == 'note') {
+    absolutePath = resolveNotePath(relativePath)
+  } else {
+    absolutePath = path.join(getRootDir(), relativePath)
+  }
+
+  const filePath = resolveNotePath(absolutePath)
   await remove(filePath)
   return true
 }

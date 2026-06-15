@@ -28,3 +28,7 @@ export const checkIfNodeIsAnchor = (node: HTMLElement | null): boolean => {
 export const hasFocus = (element: HTMLElement) => {
   return element.tagName === 'BODY'
 }
+
+export const joinPath = (p1: string, p2: string) => {
+  return p1 + '/' + p2
+}

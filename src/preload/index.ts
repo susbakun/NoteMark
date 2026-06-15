@@ -26,7 +26,7 @@ try {
     writeNote: (...args: Parameters<WriteNote>) => ipcRenderer.invoke('writeNote', ...args),
     createNote: (...args: Parameters<CreateNote>) => ipcRenderer.invoke('createNote', ...args),
     createDir: (...args: Parameters<CreateDir>) => ipcRenderer.invoke('createDir', ...args),
-    deleteFile: (...args: Parameters<DeleteFile>) => ipcRenderer.invoke('deleteNote', ...args),
+    deleteFile: (...args: Parameters<DeleteFile>) => ipcRenderer.invoke('deleteFile', ...args),
     sortNotes: (...args: Parameters<ShowSortNotesContextMenu>) =>
       ipcRenderer.invoke('sortNotes', ...args),
     showContextMenu: (...args: Parameters<ShowContextMenu>) =>
