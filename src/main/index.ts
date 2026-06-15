@@ -4,6 +4,7 @@ import {
   deleteFile,
   openLink,
   readNote,
+  scanDirectory,
   showContextMenu,
   showFile,
   showSideBarContextMenu,
@@ -17,6 +18,7 @@ import {
   DeleteFile,
   OpenLink,
   ReadNote,
+  ScanDirectory,
   ShowContextMenu,
   ShowFile,
   ShowSideBarContextMenu,
@@ -82,7 +84,7 @@ app.whenReady().then(() => {
 
   ipcMain.on('ping', () => console.log('pong'))
 
-  // ipcMain.handle('getNotes', (_, ...args: Parameters<GetNotes>) => getNotes(...args))
+  ipcMain.handle('scanDirectory', (_, ...args: Parameters<ScanDirectory>) => scanDirectory(...args))
   ipcMain.handle('readNote', (_, ...args: Parameters<ReadNote>) => readNote(...args))
   ipcMain.handle('writeNote', (_, ...args: Parameters<WriteNote>) => writeNote(...args))
   ipcMain.handle('createNote', (_, ...args: Parameters<CreateNote>) => createNote(...args))

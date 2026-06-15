@@ -5,15 +5,17 @@ import { sortNotesSelector } from '@shared/utils'
 import { atom } from 'jotai'
 import { unwrap } from 'jotai/utils'
 import { isEmpty } from 'lodash'
-import { homedir } from 'os'
-import path from 'path'
+
+const joinPath = (p1: string, p2: string) => {
+  return p1 + '/' + p2
+}
 
 const getRootDir = () => {
-  return path.join(homedir(), appDirectoryName)
+  return joinPath('/Users/amir', appDirectoryName)
 }
 
 const getFileTree = async () => {
-  let files = await window.context.scanDirectory('~/NoteMark')
+  let files = await window.context.scanDirectory(getRootDir())
 
   if (localStorage.getItem('bookmarks')) {
     const bookmarks: string[] = JSON.parse(localStorage.getItem('bookmarks')!)
@@ -118,7 +120,7 @@ export const createEmptyNoteAtom = atom(null, async (get, set) => {
 
   if (!name) return
 
-  const relativePath = path.join(parentRelativePath, name)
+  const relativePath = joinPath(parentRelativePath, name)
 
   const newNote: NoteInfo = {
     name,
@@ -180,7 +182,7 @@ export const createDirAtom = atom(null, async (get, set) => {
 
   if (!name) return
 
-  const relativePath = path.join(parentRelativePath, name)
+  const relativePath = joinPath(parentRelativePath, name)
 
   const newDirectory: DirectoryInfo = {
     name,
