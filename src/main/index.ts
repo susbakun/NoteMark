@@ -1,8 +1,7 @@
 import {
   createDir,
   createNote,
-  deleteNote,
-  getNotes,
+  deleteFile,
   openLink,
   readNote,
   showContextMenu,
@@ -15,8 +14,7 @@ import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import {
   CreateDir,
   CreateNote,
-  DeleteNote,
-  GetNotes,
+  DeleteFile,
   OpenLink,
   ReadNote,
   ShowContextMenu,
@@ -84,12 +82,12 @@ app.whenReady().then(() => {
 
   ipcMain.on('ping', () => console.log('pong'))
 
-  ipcMain.handle('getNotes', (_, ...args: Parameters<GetNotes>) => getNotes(...args))
+  // ipcMain.handle('getNotes', (_, ...args: Parameters<GetNotes>) => getNotes(...args))
   ipcMain.handle('readNote', (_, ...args: Parameters<ReadNote>) => readNote(...args))
   ipcMain.handle('writeNote', (_, ...args: Parameters<WriteNote>) => writeNote(...args))
   ipcMain.handle('createNote', (_, ...args: Parameters<CreateNote>) => createNote(...args))
   ipcMain.handle('createDir', (_, ...args: Parameters<CreateDir>) => createDir(...args))
-  ipcMain.handle('deleteNote', (_, ...args: Parameters<DeleteNote>) => deleteNote(...args))
+  ipcMain.handle('deleteFile', (_, ...args: Parameters<DeleteFile>) => deleteFile(...args))
   ipcMain.handle('openLink', (_, ...args: Parameters<OpenLink>) => openLink(...args))
   ipcMain.handle('showFile', (_, ...args: Parameters<ShowFile>) => showFile(...args))
   ipcMain.handle('sortNotes', (_, ...args: Parameters<ShowSortNotesContextMenu>) =>

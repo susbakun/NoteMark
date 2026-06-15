@@ -1,47 +1,47 @@
 import {
   createDirAtom,
   createEmptyNoteAtom,
-  deleteNoteAtom,
-  notesAtom,
-  selectedNoteIndexAtom,
-  sortFunctionNameAtom,
-  sortNotesAtom
+  deleteFileAtom,
+  fileTreeAtom,
+  selectedNotePathAtom,
+  sortFilesAtom,
+  sortFunctionNameAtom
 } from '@renderer/store'
-import { NoteInfo } from '@shared/models'
+import { FileSystemItem } from '@shared/models'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 
 export const useNotesList = ({ onSelect }: { onSelect?: () => void }) => {
-  const notes = useAtomValue(notesAtom)
-  const [selectedNoteIndex, setSelectedNoteIndex] = useAtom(selectedNoteIndexAtom)
-  const deleteNote = useSetAtom(deleteNoteAtom)
+  const files = useAtomValue(fileTreeAtom)
+  const [selectedNotePath, setSelectedNotePath] = useAtom(selectedNotePathAtom)
+  const deleteFile = useSetAtom(deleteFileAtom)
   const createEmptyNote = useSetAtom(createEmptyNoteAtom)
   const createDir = useSetAtom(createDirAtom)
   const [sortFunctionName, setSortFunctionName] = useAtom(sortFunctionNameAtom)
-  const sortNotes = useSetAtom(sortNotesAtom)
+  const sortFiles = useSetAtom(sortFilesAtom)
 
-  const handleNoteSelect = (index: number) => async () => {
-    setSelectedNoteIndex(index)
+  const handleNoteSelect = (relativePath: string) => async () => {
+    setSelectedNotePath(relativePath)
 
     if (onSelect) {
       onSelect()
     }
   }
 
-  const filterNotes = (notes: NoteInfo[], searched: string): NoteInfo[] => {
-    return notes.filter((note) => note.title.toLowerCase().includes(searched.toLowerCase()))
+  const filterFiles = (files: FileSystemItem[], searched: string): FileSystemItem[] => {
+    return files.filter((file) => file.name.toLowerCase().includes(searched.toLowerCase()))
   }
 
-  const getBookmarkedNotes = (notes: NoteInfo[]): NoteInfo[] => {
-    return notes.filter((note) => note.bookmarked)
+  const getBookmarkedNotes = (files: FileSystemItem[]): FileSystemItem[] => {
+    return files.filter((file) => file.type === 'note' && file.bookmarked)
   }
 
   return {
-    notes,
-    sortNotes,
-    selectedNoteIndex,
-    setSelectedNoteIndex,
-    deleteNote,
-    filterNotes,
+    files,
+    sortFiles,
+    selectedNotePath,
+    setSelectedNotePath,
+    deleteFile,
+    filterFiles,
     getBookmarkedNotes,
     createEmptyNote,
     createDir,

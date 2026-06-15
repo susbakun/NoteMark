@@ -1,5 +1,6 @@
 import { NotePreview } from '@/components'
 import { useNotesList } from '@renderer/hooks/useNotesList'
+import { NoteInfo } from '@shared/models'
 import { isEmpty } from 'lodash'
 import { ComponentProps } from 'react'
 import { twMerge } from 'tailwind-merge'
@@ -19,12 +20,12 @@ export const NotePreviewList = ({
   className,
   ...props
 }: NotePreviewListProps) => {
-  const { notes, selectedNoteIndex, handleNoteSelect, getBookmarkedNotes, filterNotes } =
+  const { files, selectedNotePath, handleNoteSelect, getBookmarkedNotes, filterFiles } =
     useNotesList({ onSelect })
 
-  if (!notes) return null
+  if (!files) return null
 
-  if (isEmpty(notes)) {
+  if (isEmpty(files)) {
     return (
       <ul className={twMerge('text-center pt-4', className)} {...props}>
         <span>No Notes Yet!</span>
@@ -32,24 +33,26 @@ export const NotePreviewList = ({
     )
   }
 
-  let filteredNotes = filterNotes(notes, searched)
+  let filteredFiles = filterFiles(files, searched)
 
   if (showBookmarks) {
-    filteredNotes = getBookmarkedNotes(filteredNotes)
+    filteredFiles = getBookmarkedNotes(filteredFiles)
   }
 
   return (
     <ul className={twMerge('transition-all duration-200 ease-out', className)} {...props}>
-      {notes.map((note, index) => (
-        <NotePreview
-          key={note.title + note.lastEditTime}
-          isActive={selectedNoteIndex === index}
-          isHidden={filteredNotes.includes(note) ? false : true}
-          onClick={handleNoteSelect(index)}
-          onContextMenu={() => onSidebarContextMenu(index)}
-          {...note}
-        />
-      ))}
+      {filteredFiles
+        .filter((file): file is NoteInfo => file.type === 'note')
+        .map((file, index) => (
+          <NotePreview
+            key={file.relativePath}
+            isActive={selectedNotePath === file.relativePath}
+            isHidden={filteredFiles.includes(file) ? false : true}
+            onClick={handleNoteSelect(file.relativePath)}
+            onContextMenu={() => onSidebarContextMenu(index)}
+            {...file}
+          />
+        ))}
     </ul>
   )
 }

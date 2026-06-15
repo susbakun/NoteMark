@@ -25,12 +25,12 @@ const App = () => {
   const [isInitilized, setIsInitilized] = useState(false)
 
   const {
-    notes,
-    sortNotes,
-    setSelectedNoteIndex,
+    files,
+    sortFiles,
+    setSelectedNotePath,
     createEmptyNote,
     createDir,
-    deleteNote,
+    deleteFile,
     setSortFunctionName
   } = useNotesList({})
 
@@ -44,7 +44,7 @@ const App = () => {
 
   const handleSearchNote = (event: ChangeEvent<HTMLInputElement>) => {
     setSearched(event.target.value)
-    setSelectedNoteIndex(null)
+    setSelectedNotePath(null)
   }
 
   const handleCloseSearchBar = () => {
@@ -82,7 +82,7 @@ const App = () => {
   }
 
   const handleDeleteNote = async () => {
-    await deleteNote()
+    await deleteFile()
   }
 
   const handleSortNotesContextMenu = () => {
@@ -90,27 +90,27 @@ const App = () => {
   }
 
   const handleSortNotes = (sortType: SortType) => {
-    setSelectedNoteIndex(null)
+    setSelectedNotePath(null)
     setSortFunctionName(sortType)
     console.log(sortType)
-    if (notes) sortNotes()
+    if (files) sortFiles()
   }
 
   const handleEditorContextMenu = () => {
     window.context.showContextMenu()
   }
 
-  const handleSideBarContextMenu = (index: number) => {
-    setSelectedNoteIndex(index)
+  const handleSideBarContextMenu = (relativePath) => {
+    setSelectedNotePath(relativePath)
     window.context.showSideBarContextMenu()
   }
 
   useEffect(() => {
-    if (!isInitilized && notes) {
+    if (!isInitilized && files) {
       setIsInitilized(true)
       window.context.initilization(handleFileCreation, handleDeleteNote, handleSortNotes)
     }
-  }, [notes])
+  }, [files])
 
   return (
     <>

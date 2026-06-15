@@ -1,11 +1,11 @@
 import {
   CreateDir,
   CreateNote,
-  DeleteNote,
-  GetNotes,
+  DeleteFile,
   Initialization,
   OpenLink,
   ReadNote,
+  ScanDirectory,
   ShowContextMenu,
   ShowSideBarContextMenu,
   ShowSortNotesContextMenu,
@@ -20,12 +20,13 @@ if (!process.contextIsolated) {
 try {
   contextBridge.exposeInMainWorld('context', {
     locale: navigator.language,
-    getNotes: (...args: Parameters<GetNotes>) => ipcRenderer.invoke('getNotes', ...args),
+    scanDirectory: (...args: Parameters<ScanDirectory>) =>
+      ipcRenderer.invoke('scanDirectory', ...args),
     readNote: (...args: Parameters<ReadNote>) => ipcRenderer.invoke('readNote', ...args),
     writeNote: (...args: Parameters<WriteNote>) => ipcRenderer.invoke('writeNote', ...args),
     createNote: (...args: Parameters<CreateNote>) => ipcRenderer.invoke('createNote', ...args),
     createDir: (...args: Parameters<CreateDir>) => ipcRenderer.invoke('createDir', ...args),
-    deleteNote: (...args: Parameters<DeleteNote>) => ipcRenderer.invoke('deleteNote', ...args),
+    deleteFile: (...args: Parameters<DeleteFile>) => ipcRenderer.invoke('deleteNote', ...args),
     sortNotes: (...args: Parameters<ShowSortNotesContextMenu>) =>
       ipcRenderer.invoke('sortNotes', ...args),
     showContextMenu: (...args: Parameters<ShowContextMenu>) =>

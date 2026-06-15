@@ -2,14 +2,14 @@ import { createContextMenu } from '@/configs/AppContextMenu'
 import { createApplicationMenu } from '@/configs/AppMenu'
 import { createSideBarContextMenu } from '@/configs/SideBarContextMenu'
 import { sortButtonContextMenu } from '@/configs/SortButtonContextMenu'
-import { appDirectoryName, fileEncoding, welcomeNoteFilename } from '@shared/constants'
-import { NoteInfo } from '@shared/models'
+import { appDirectoryName, fileEncoding } from '@shared/constants'
+import { FileSystemItem } from '@shared/models'
 import {
   CreateNote,
-  DeleteNote,
-  GetNotes,
+  DeleteFile,
   OpenLink,
   ReadNote,
+  ScanDirectory,
   ShowContextMenu,
   ShowFile,
   ShowSideBarContextMenu,
@@ -17,73 +17,72 @@ import {
   WriteNote
 } from '@shared/types'
 import { BrowserWindow, dialog, shell } from 'electron'
-import { ensureDir, readdir, readFile, remove, stat, writeFile } from 'fs-extra'
-import { isEmpty } from 'lodash'
+import { ensureDir, mkdir, readdir, readFile, remove, stat, writeFile } from 'fs-extra'
 import { homedir } from 'os'
-import path, { parse } from 'path'
-import welcomeNote from '../../../resources/welcomeNote.md?asset'
+import path from 'path'
+
+const resolveNotePath = (relativePath: string) => path.join(getRootDir(), `${relativePath}.md`)
 
 export const getRootDir = () => {
   return `${homedir()}/${appDirectoryName}`
 }
 
-export const getNotes: GetNotes = async () => {
-  const rootDir = getRootDir()
+export const scanDirectory: ScanDirectory = async (dirPath, relativePrefix) => {
+  const entries = await readdir(dirPath, { withFileTypes: true })
+  const items: FileSystemItem[] = []
 
-  await ensureDir(rootDir)
-
-  const notesFileName = await readdir(rootDir, {
-    encoding: fileEncoding,
-    withFileTypes: false
-  })
-
-  const notes = notesFileName.filter((fileName) => fileName.endsWith('.md'))
-
-  if (isEmpty(notes)) {
-    console.info(`No notes found creating a welcome note`)
-
-    const content = await readFile(welcomeNote, { encoding: fileEncoding })
-
-    await writeFile(`${rootDir}/${welcomeNoteFilename}`, content, { encoding: fileEncoding })
-    notes.push(welcomeNoteFilename)
+  for (const entry of entries) {
+    const rel = relativePrefix ? `${relativePrefix}/${entry.name}` : entry.name
+    if (entry.isDirectory()) {
+      const children = await scanDirectory(path.join(dirPath, entry.name), rel)
+      const stats = await stat(dirPath)
+      items.push({
+        type: 'directory',
+        relativePath: rel,
+        name: entry.name,
+        children,
+        lastEditTime: stats.mtimeMs
+      })
+    } else if (entry.isFile() && entry.name.endsWith('.md')) {
+      const stats = await stat(path.join(dirPath, entry.name))
+      items.push({
+        type: 'note',
+        relativePath: rel.replace(/\.md$/, ''),
+        name: entry.name.replace(/\.md$/, ''),
+        lastEditTime: stats.mtimeMs,
+        bookmarked: false
+      })
+    }
   }
-
-  return Promise.all(notes.map(getNoteInfoFromFilename))
+  return items
 }
 
-export const getNoteInfoFromFilename = async (filename: string): Promise<NoteInfo> => {
-  const fileStats = await stat(`${getRootDir()}/${filename}`)
-
-  return {
-    title: filename.replace(/\.md$/, ''),
-    lastEditTime: fileStats.mtimeMs, //last Edit time
-    bookmarked: false
-  }
-}
-
-export const readNote: ReadNote = async (filename) => {
-  const rootDir = getRootDir()
-
+export const readNote: ReadNote = async (relativePath) => {
   const window = BrowserWindow.getFocusedWindow()
+  const notePath = resolveNotePath(relativePath)
+  const { name: filename } = path.parse(notePath)
+
   window?.setRepresentedFilename(filename)
   createApplicationMenu()
 
-  return readFile(`${rootDir}/${filename}.md`, { encoding: fileEncoding })
+  return readFile(notePath, { encoding: fileEncoding })
 }
 
-export const writeNote: WriteNote = async (filename, content) => {
-  const rootDir = getRootDir()
-  console.info(`Writing note ${filename}`)
-  return writeFile(`${rootDir}/${filename}.md`, content, { encoding: fileEncoding })
+export const writeNote: WriteNote = async (relativePath, content) => {
+  console.info(`Writing note ${relativePath}`)
+  const notePath = resolveNotePath(relativePath)
+
+  return writeFile(`${notePath}`, content, { encoding: fileEncoding })
 }
 
-export const createNote: CreateNote = async () => {
-  const rootDir = getRootDir()
-  await ensureDir(rootDir)
+export const createNote: CreateNote = async (parentRelativePath) => {
+  const notePath = parentRelativePath ? path.join(getRootDir(), parentRelativePath) : getRootDir()
+
+  await ensureDir(notePath)
 
   const { filePath, canceled } = await dialog.showSaveDialog({
     title: 'New Note',
-    defaultPath: `${rootDir}/Undefined.md`,
+    defaultPath: `${notePath}/Undefined.md`,
     buttonLabel: 'Create',
     properties: ['showOverwriteConfirmation'], // be aware that the user will overwrite the existing file
     showsTagField: false,
@@ -95,29 +94,20 @@ export const createNote: CreateNote = async () => {
     return false
   }
 
-  const { name: fileName, dir: parentDir } = path.parse(filePath)
-
-  if (parentDir !== rootDir) {
-    await dialog.showMessageBox({
-      type: 'error',
-      title: 'Creation failed',
-      message: `All notes must be saved under ${rootDir}.
-      Avoid using other directories!`
-    })
-    return false
-  }
+  const { name: fileName } = path.parse(filePath)
 
   console.info(`Creating note: ${filePath}`)
   await writeFile(filePath, '')
   return fileName
 }
 
-export const deleteNote: DeleteNote = async (filename) => {
-  const rootDir = getRootDir()
+export const deleteFile: DeleteFile = async (relativePath, type) => {
+  const title = type == 'note' ? 'Delete Note' : 'Delete Folder'
+
   const { response } = await dialog.showMessageBox({
     type: 'warning',
-    title: 'Delete Note',
-    message: `Are you sure you want to delete ${filename}?`,
+    title,
+    message: `Are you sure you want to delete ${relativePath}?`,
     buttons: ['Delete', 'Cancel'],
     defaultId: 1,
     cancelId: 1
@@ -128,8 +118,10 @@ export const deleteNote: DeleteNote = async (filename) => {
     return false
   }
 
-  console.info('Deleting note: ', filename)
-  await remove(`${rootDir}/${filename}.md`)
+  console.info('Deleting file', relativePath)
+
+  const filePath = resolveNotePath(relativePath)
+  await remove(filePath)
   return true
 }
 
@@ -138,22 +130,21 @@ export const openLink: OpenLink = async (link) => {
 }
 
 export const showFile: ShowFile = () => {
-  const rootDir = getRootDir()
   const filePath = BrowserWindow.getFocusedWindow()?.getRepresentedFilename()
 
   if (filePath) {
-    const { name: fileName } = parse(filePath)
-    shell.showItemInFolder(`${rootDir}/${fileName}.md`)
+    shell.showItemInFolder(filePath)
   }
 }
 
-export const createDir = async () => {
-  const rootDir = getRootDir()
-  await ensureDir(rootDir)
+export const createDir = async (parentRelativePath) => {
+  const dirPath = parentRelativePath ? path.join(getRootDir(), parentRelativePath) : getRootDir()
+
+  await ensureDir(dirPath)
 
   const { filePath, canceled } = await dialog.showSaveDialog({
     title: 'New Folder',
-    defaultPath: `${rootDir}`,
+    defaultPath: `${dirPath}`,
     buttonLabel: 'Create',
     properties: ['createDirectory']
   })
@@ -163,19 +154,10 @@ export const createDir = async () => {
     return false
   }
 
-  const { name, dir } = path.parse(filePath)
-
-  if (dir !== rootDir) {
-    await dialog.showMessageBox({
-      type: 'error',
-      title: 'Creation failed',
-      message: `All folders must be saved under ${rootDir}.
-      Avoid using other directories!`
-    })
-    return false
-  }
+  const { name } = path.parse(filePath)
 
   console.info(`Creating folder: ${filePath}`)
+  await mkdir(filePath)
   return name
 }
 

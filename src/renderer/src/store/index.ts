@@ -1,46 +1,55 @@
-import { NoteContent, NoteInfo } from '@shared/models'
+import { appDirectoryName } from '@shared/constants'
+import { DirectoryInfo, FileSystemItem, NoteContent, NoteInfo } from '@shared/models'
 import { SortType } from '@shared/types'
 import { sortNotesSelector } from '@shared/utils'
 import { atom } from 'jotai'
 import { unwrap } from 'jotai/utils'
 import { isEmpty } from 'lodash'
+import { homedir } from 'os'
+import path from 'path'
 
-const loadNotes = async () => {
-  let notes = await window.context.getNotes()
+const getRootDir = () => {
+  return path.join(homedir(), appDirectoryName)
+}
+
+const getFileTree = async () => {
+  let files = await window.context.scanDirectory('~/NoteMark')
 
   if (localStorage.getItem('bookmarks')) {
     const bookmarks: string[] = JSON.parse(localStorage.getItem('bookmarks')!)
     if (!isEmpty(bookmarks)) {
-      notes = notes.map((note) => {
-        if (bookmarks.includes(note.title)) {
-          return { ...note, bookmarked: true }
+      files = files.map((file) => {
+        if (bookmarks.includes(file.relativePath)) {
+          return { ...file, bookmarked: true }
         }
-        return note
+        return file
       })
     }
   }
 
   // sort them by most recently edited
-  return notes.sort((a, b) => b.lastEditTime - a.lastEditTime)
+  return files.sort((a, b) => b.lastEditTime - a.lastEditTime)
 }
 
-const notesAtomAsync = atom<NoteInfo[] | Promise<NoteInfo[]>>(loadNotes())
+const fileTreeAtomAsync = atom<FileSystemItem[] | Promise<FileSystemItem[]>>(getFileTree())
 
-export const notesAtom = unwrap(notesAtomAsync, (prev) => {
+export const fileTreeAtom = unwrap(fileTreeAtomAsync, (prev) => {
   return prev
 })
 
-export const selectedNoteIndexAtom = atom<number | null>(null)
+export const selectedNotePathAtom = atom<string | null>(null)
+export const expandedDirsAtom = atom<Set<string>>(new Set<string>())
+export const selectedDirPathAtom = atom<string | null>(null)
 
 const selectedNoteAtomAsync = atom(async (get) => {
-  const notes = get(notesAtom)
-  const selectedNoteIndex = get(selectedNoteIndexAtom)
+  const files = get(fileTreeAtom)
+  const selectedNotePath = get(selectedNotePathAtom)
 
-  if (selectedNoteIndex == null || !notes) return null
+  if (selectedNotePath == null || !files) return null
 
-  const selectedNote = notes[selectedNoteIndex]
-
-  const noteContent = await window.context.readNote(selectedNote.title)
+  const selectedNote = files.find((note) => note.relativePath == selectedNotePath)
+  if (!selectedNote) return null
+  const noteContent = await window.context.readNote(selectedNotePath)
 
   return {
     ...selectedNote,
@@ -52,7 +61,9 @@ export const selectedNoteAtom = unwrap(
   selectedNoteAtomAsync,
   (prev) =>
     prev ?? {
-      title: '',
+      type: 'note',
+      relativePath: getRootDir(),
+      name: '',
       content: '',
       bookmarked: false,
       lastEditTime: Date.now()
@@ -61,62 +72,58 @@ export const selectedNoteAtom = unwrap(
 
 export const sortFunctionNameAtom = atom<SortType>('sortNotesFromNewToOld')
 
-export const sortNotesAtom = atom(null, (get, set) => {
-  const notes = get(notesAtom)
-  const selectedNoteIndex = get(selectedNoteIndexAtom)
+export const sortFilesAtom = atom(null, (get, set) => {
+  const files = get(fileTreeAtom)
 
-  if (!notes) return
-
-  const unOrderedNotes = [...notes]
+  if (!files) return
 
   const sortFunctionName = get(sortFunctionNameAtom)
   const sortFunction = sortNotesSelector(sortFunctionName)
 
-  const sortedNotes = sortFunction(notes)
+  const sortedFiles = sortFunction(files)
 
-  set(notesAtom, sortedNotes)
-
-  if (selectedNoteIndex == null) return
-  const selectedNote = unOrderedNotes[selectedNoteIndex]
-
-  const newIndexOfSelectedNote = sortedNotes.findIndex((note) => note.title === selectedNote.title)
-  set(selectedNoteIndexAtom, newIndexOfSelectedNote)
+  set(fileTreeAtom, sortedFiles)
 })
 
 export const saveNoteAtom = atom(null, async (get, set, newContent: NoteContent) => {
-  const notes = get(notesAtom)
+  const files = get(fileTreeAtom)
   const selectedNote = get(selectedNoteAtom)
 
-  if (!notes || !selectedNote) return
+  if (!files || !selectedNote) return
 
-  await window.context.writeNote(selectedNote.title, newContent)
+  await window.context.writeNote(selectedNote.relativePath, newContent)
 
   //update the saved note's last edit time
   set(
-    notesAtom,
-    notes.map((note) => {
-      if (note.title === selectedNote.title) {
+    fileTreeAtom,
+    files.map((file) => {
+      if (file.relativePath === selectedNote.relativePath) {
         return {
-          ...note,
+          ...file,
           lastEditTime: Date.now()
         }
       }
-      return note
+      return file
     })
   )
 })
 
 export const createEmptyNoteAtom = atom(null, async (get, set) => {
-  const notes = get(notesAtom)
+  const files = get(fileTreeAtom)
 
-  if (!notes) return
+  if (!files) return
+  const parentRelativePath = get(selectedDirPathAtom) ?? getRootDir()
 
-  const title = await window.context.createNote()
+  const name = await window.context.createNote(parentRelativePath)
 
-  if (!title) return
+  if (!name) return
+
+  const relativePath = path.join(parentRelativePath, name)
 
   const newNote: NoteInfo = {
-    title,
+    name,
+    type: 'note',
+    relativePath,
     lastEditTime: Date.now(),
     bookmarked: false
   }
@@ -124,27 +131,30 @@ export const createEmptyNoteAtom = atom(null, async (get, set) => {
   const sortFunctionName = get(sortFunctionNameAtom)
   const sortFunction = sortNotesSelector(sortFunctionName)
 
-  const newNotes = sortFunction([newNote, ...notes.filter((note) => note.title !== newNote.title)])
-  const indexOfNewNote = newNotes.indexOf(newNote)
+  const newFiles = sortFunction([
+    newNote,
+    ...files.filter((file) => file.relativePath !== newNote.relativePath)
+  ])
 
-  set(notesAtom, newNotes)
-  set(selectedNoteIndexAtom, indexOfNewNote)
+  set(fileTreeAtom, newFiles)
+  set(selectedNotePathAtom, relativePath)
 })
 
-export const deleteNoteAtom = atom(null, async (get, set) => {
-  const notes = get(notesAtom)
+// used for both note and dir
+export const deleteFileAtom = atom(null, async (get, set) => {
+  const files = get(fileTreeAtom)
 
   const selectedNote = get(selectedNoteAtom)
 
-  if (!selectedNote || !notes) return
+  if (!selectedNote || !files) return
 
-  const isDeleted = await window.context.deleteNote(selectedNote.title)
+  const isDeleted = await window.context.deleteFile(selectedNote.relativePath, selectedNote.type)
   if (!isDeleted) return
 
   if (localStorage.getItem('bookmarks')) {
     const bookmarks: string[] = JSON.parse(localStorage.getItem('bookmarks')!)
-    if (bookmarks.includes(selectedNote.title)) {
-      bookmarks.filter((bookmark) => bookmark !== selectedNote.title)
+    if (bookmarks.includes(selectedNote.relativePath)) {
+      bookmarks.filter((bookmark) => bookmark !== selectedNote.relativePath)
       localStorage.setItem('bookmarks', JSON.stringify(bookmarks))
     }
   }
@@ -153,22 +163,50 @@ export const deleteNoteAtom = atom(null, async (get, set) => {
   const sortFunction = sortNotesSelector(sortFunctionName)
 
   set(
-    notesAtom,
-    sortFunction(notes).filter((note) => note.title !== selectedNote.title)
+    fileTreeAtom,
+    sortFunction(files).filter((file) => file.relativePath !== selectedNote.relativePath)
   )
 
-  set(selectedNoteIndexAtom, null)
+  set(selectedNotePathAtom, null)
 })
 
 export const createDirAtom = atom(null, async (get, set) => {
-  await window.context.createDir()
+  const files = get(fileTreeAtom)
+
+  if (!files) return
+
+  const parentRelativePath = get(selectedDirPathAtom) ?? getRootDir()
+  const name = await window.context.createDir(parentRelativePath)
+
+  if (!name) return
+
+  const relativePath = path.join(parentRelativePath, name)
+
+  const newDirectory: DirectoryInfo = {
+    name,
+    type: 'directory',
+    children: [],
+    relativePath,
+    lastEditTime: Date.now()
+  }
+
+  const sortFunctionName = get(sortFunctionNameAtom)
+  const sortFunction = sortNotesSelector(sortFunctionName)
+
+  const newFiles = sortFunction([
+    newDirectory,
+    ...files.filter((file) => file.relativePath !== newDirectory.relativePath)
+  ])
+
+  set(fileTreeAtom, newFiles)
+  set(selectedDirPathAtom, relativePath)
 })
 
 export const bookmarkNoteAtom = atom(null, (get, set) => {
-  const notes = get(notesAtom)
+  const files = get(fileTreeAtom)
   const selectedNote = get(selectedNoteAtom)
 
-  if (!selectedNote || !notes) return
+  if (!selectedNote || !files) return
 
   let bookmarks: string[] = []
 
@@ -176,21 +214,21 @@ export const bookmarkNoteAtom = atom(null, (get, set) => {
     bookmarks = JSON.parse(localStorage.getItem('bookmarks')!)
   }
 
-  if (bookmarks.includes(selectedNote.title)) {
-    bookmarks = bookmarks.filter((bookmark) => bookmark !== selectedNote.title)
+  if (bookmarks.includes(selectedNote.relativePath)) {
+    bookmarks = bookmarks.filter((bookmark) => bookmark !== selectedNote.relativePath)
   } else {
-    bookmarks.push(selectedNote.title)
+    bookmarks.push(selectedNote.relativePath)
   }
 
   localStorage.setItem('bookmarks', JSON.stringify(bookmarks))
 
   set(
-    notesAtom,
-    notes.map((note) => {
-      if (note.title === selectedNote.title) {
-        return { ...note, bookmarked: !selectedNote.bookmarked }
+    fileTreeAtom,
+    files.map((file) => {
+      if (file.relativePath === selectedNote.relativePath && selectedNote.type === 'note') {
+        return { ...file, bookmarked: !selectedNote.bookmarked }
       }
-      return note
+      return file
     })
   )
 })

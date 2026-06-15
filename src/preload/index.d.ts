@@ -1,11 +1,10 @@
 import {
   CreateDir,
   CreateNote,
-  DeleteNote,
-  GetNotes,
   Initialization,
   OpenLink,
   ReadNote,
+  ScanDirectory,
   ShowContextMenu,
   ShowSideBarContextMenu,
   SortNotes,
@@ -17,12 +16,12 @@ declare global {
     // electron: ElectronAPI
     context: {
       locale: string
-      getNotes: GetNotes
+      scanDirectory: ScanDirectory
       readNote: ReadNote
       writeNote: WriteNote
       createNote: CreateNote
       createDir: CreateDir
-      deleteNote: DeleteNote
+      deleteFile: DeleteFile
       sortNotes: SortNotes
       openLink: OpenLink
       showContextMenu: ShowContextMenu

@@ -16,11 +16,11 @@ export const sortNotesSelector = (sortType: SortType): SortFunction => {
 }
 
 export const sortNotesFromAToZ: SortFunction = (notes) => {
-  return notes.sort((a, b) => (a.title > b.title ? 1 : a.title < b.title ? -1 : 0))
+  return notes.sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0))
 }
 
 export const sortNotesFromZToA: SortFunction = (notes) => {
-  return notes.sort((a, b) => (a.title > b.title ? -1 : a.title < b.title ? 1 : 0))
+  return notes.sort((a, b) => (a.name > b.name ? -1 : a.name < b.name ? 1 : 0))
 }
 
 export const sortNotesFromNewToOld: SortFunction = (notes) => {

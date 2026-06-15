@@ -20,7 +20,7 @@ export const MarkdownEditor = ({ onContextMenu }: ComponentProps<'div'>) => {
     <div onContextMenu={onContextMenu}>
       <MDXEditor
         ref={editorRef}
-        key={selectedNote.title}
+        key={selectedNote.relativePath}
         onChange={handleAutoSaving}
         markdown={selectedNote.content}
         onBlur={handleBlur}
