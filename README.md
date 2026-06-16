@@ -2,6 +2,9 @@
 
 A desktop markdown note-taking app built with Electron, React, and TypeScript. Notes live as plain `.md` files on your machine—simple, local, and easy to back up.
 
+<img width="753" height="548" alt="image" src="https://github.com/user-attachments/assets/5c865399-9a15-44f4-8a71-bb1ca0f62635" />
+
+
 This project began as a fork and personal extension of [NoteMark by CodeWithGionatha-Labs](https://github.com/CodeWithGionatha-Labs/NoteMark). The original app is a great introduction to building a markdown editor with Electron; this version keeps that foundation and adds folder organization, a file tree sidebar, and other workflow improvements.
 
 ## What's new in this fork
