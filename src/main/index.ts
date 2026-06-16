@@ -2,6 +2,7 @@ import {
   createDir,
   createNote,
   deleteFile,
+  getRootDir,
   openLink,
   readNote,
   scanDirectory,
@@ -16,6 +17,7 @@ import {
   CreateDir,
   CreateNote,
   DeleteFile,
+  GetRootDir,
   OpenLink,
   ReadNote,
   ScanDirectory,
@@ -84,6 +86,7 @@ app.whenReady().then(() => {
 
   ipcMain.on('ping', () => console.log('pong'))
 
+  ipcMain.handle('getRootDir', (_, ...args: Parameters<GetRootDir>) => getRootDir(...args))
   ipcMain.handle('scanDirectory', (_, ...args: Parameters<ScanDirectory>) => scanDirectory(...args))
   ipcMain.handle('readNote', (_, ...args: Parameters<ReadNote>) => readNote(...args))
   ipcMain.handle('writeNote', (_, ...args: Parameters<WriteNote>) => writeNote(...args))

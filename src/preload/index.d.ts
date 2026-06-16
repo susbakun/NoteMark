@@ -1,6 +1,7 @@
 import {
   CreateDir,
   CreateNote,
+  GetRootDir,
   Initialization,
   OpenLink,
   ReadNote,
@@ -16,6 +17,7 @@ declare global {
     // electron: ElectronAPI
     context: {
       locale: string
+      getRootDir: GetRootDir
       scanDirectory: ScanDirectory
       readNote: ReadNote
       writeNote: WriteNote

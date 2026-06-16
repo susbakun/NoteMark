@@ -2,6 +2,7 @@ import {
   CreateDir,
   CreateNote,
   DeleteFile,
+  GetRootDir,
   Initialization,
   OpenLink,
   ReadNote,
@@ -20,6 +21,7 @@ if (!process.contextIsolated) {
 try {
   contextBridge.exposeInMainWorld('context', {
     locale: navigator.language,
+    getRootDir: (...args: Parameters<GetRootDir>) => ipcRenderer.invoke('getRootDir', ...args),
     scanDirectory: (...args: Parameters<ScanDirectory>) =>
       ipcRenderer.invoke('scanDirectory', ...args),
     readNote: (...args: Parameters<ReadNote>) => ipcRenderer.invoke('readNote', ...args),

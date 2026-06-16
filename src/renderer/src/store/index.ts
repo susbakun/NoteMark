@@ -1,18 +1,17 @@
 import { joinPath } from '@renderer/utils'
-import { appDirectoryName, homeDir } from '@shared/constants'
 import { DirectoryInfo, FileSystemItem, NoteContent, NoteInfo } from '@shared/models'
 import { SortType } from '@shared/types'
-import { sortNotesSelector } from '@shared/utils'
+import { sortFilesSelector } from '@shared/utils'
 import { atom } from 'jotai'
 import { unwrap } from 'jotai/utils'
 import { isEmpty } from 'lodash'
 
-const getRootDir = () => {
-  return joinPath(homeDir, appDirectoryName)
+const getRootDir = async () => {
+  return await window.context.getRootDir()
 }
 
 const getFileTree = async () => {
-  let files = await window.context.scanDirectory(getRootDir())
+  let files = await window.context.scanDirectory(await getRootDir())
 
   if (localStorage.getItem('bookmarks')) {
     const bookmarks: string[] = JSON.parse(localStorage.getItem('bookmarks')!)
@@ -40,28 +39,33 @@ export const selectedNotePathAtom = atom<string | null>(null)
 export const expandedDirsAtom = atom<Set<string>>(new Set<string>())
 export const selectedDirPathAtom = atom<string | null>(null)
 
-const selectedNoteAtomAsync = atom(async (get) => {
+const selectFileAtomAsync = atom(async (get) => {
   const files = get(fileTreeAtom)
   const selectedNotePath = get(selectedNotePathAtom)
 
   if (selectedNotePath == null || !files) return null
 
-  const selectedNote = files.find((note) => note.relativePath == selectedNotePath)
-  if (!selectedNote) return null
+  const selectedFile = files.find((note) => note.relativePath == selectedNotePath)
+  if (!selectedFile) return null
+
+  // if (selectedFile.type === 'directory') {
+  //   set(selectedDirPathAtom, selectedFile.relativePath)
+  //   return null
+  // }
   const noteContent = await window.context.readNote(selectedNotePath)
 
   return {
-    ...selectedNote,
+    ...selectedFile,
     content: noteContent
   }
 })
 
 export const selectedNoteAtom = unwrap(
-  selectedNoteAtomAsync,
+  selectFileAtomAsync,
   (prev) =>
     prev ?? {
       type: 'note',
-      relativePath: getRootDir(),
+      relativePath: '.',
       name: '',
       content: '',
       bookmarked: false,
@@ -77,7 +81,7 @@ export const sortFilesAtom = atom(null, (get, set) => {
   if (!files) return
 
   const sortFunctionName = get(sortFunctionNameAtom)
-  const sortFunction = sortNotesSelector(sortFunctionName)
+  const sortFunction = sortFilesSelector(sortFunctionName)
 
   const sortedFiles = sortFunction(files)
 
@@ -128,7 +132,7 @@ export const createEmptyNoteAtom = atom(null, async (get, set) => {
   }
 
   const sortFunctionName = get(sortFunctionNameAtom)
-  const sortFunction = sortNotesSelector(sortFunctionName)
+  const sortFunction = sortFilesSelector(sortFunctionName)
 
   const newFiles = sortFunction([
     newNote,
@@ -159,7 +163,7 @@ export const deleteFileAtom = atom(null, async (get, set) => {
   }
 
   const sortFunctionName = get(sortFunctionNameAtom)
-  const sortFunction = sortNotesSelector(sortFunctionName)
+  const sortFunction = sortFilesSelector(sortFunctionName)
 
   set(
     fileTreeAtom,
@@ -190,7 +194,7 @@ export const createDirAtom = atom(null, async (get, set) => {
   }
 
   const sortFunctionName = get(sortFunctionNameAtom)
-  const sortFunction = sortNotesSelector(sortFunctionName)
+  const sortFunction = sortFilesSelector(sortFunctionName)
 
   const newFiles = sortFunction([
     newDirectory,

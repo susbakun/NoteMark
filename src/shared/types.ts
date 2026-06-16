@@ -1,5 +1,6 @@
 import { DirectoryInfo, FileSystemItem, NoteContent, NoteInfo } from './models'
 
+export type GetRootDir = () => Promise<string>
 export type ScanDirectory = (dirPath: string, relativePrefix?: string) => Promise<FileSystemItem[]>
 export type ReadNote = (relativePath: NoteInfo['relativePath']) => Promise<NoteContent>
 export type WriteNote = (

@@ -127,8 +127,7 @@ export const deleteFile: DeleteFile = async (relativePath, type) => {
     absolutePath = path.join(getRootDir(), relativePath)
   }
 
-  const filePath = resolveNotePath(absolutePath)
-  await remove(filePath)
+  await remove(absolutePath)
   return true
 }
 
