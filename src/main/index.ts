@@ -6,6 +6,7 @@ import {
   openLink,
   readNote,
   scanDirectory,
+  selectFile,
   showContextMenu,
   showFile,
   showSideBarContextMenu,
@@ -21,6 +22,7 @@ import {
   OpenLink,
   ReadNote,
   ScanDirectory,
+  SelectFile,
   ShowContextMenu,
   ShowFile,
   ShowSideBarContextMenu,
@@ -88,6 +90,7 @@ app.whenReady().then(() => {
 
   ipcMain.handle('getRootDir', (_, ...args: Parameters<GetRootDir>) => getRootDir(...args))
   ipcMain.handle('scanDirectory', (_, ...args: Parameters<ScanDirectory>) => scanDirectory(...args))
+  ipcMain.handle('selectFile', (_, ...args: Parameters<SelectFile>) => selectFile(...args))
   ipcMain.handle('readNote', (_, ...args: Parameters<ReadNote>) => readNote(...args))
   ipcMain.handle('writeNote', (_, ...args: Parameters<WriteNote>) => writeNote(...args))
   ipcMain.handle('createNote', (_, ...args: Parameters<CreateNote>) => createNote(...args))

@@ -6,6 +6,7 @@ import {
   OpenLink,
   ReadNote,
   ScanDirectory,
+  SelectFile,
   ShowContextMenu,
   ShowSideBarContextMenu,
   SortNotes,
@@ -19,6 +20,7 @@ declare global {
       locale: string
       getRootDir: GetRootDir
       scanDirectory: ScanDirectory
+      selectFile: SelectFile
       readNote: ReadNote
       writeNote: WriteNote
       createNote: CreateNote

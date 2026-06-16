@@ -5,14 +5,14 @@ import { ComponentProps } from 'react'
 type ActionButtonRow = ComponentProps<'div'> & {
   onCreateEmptyNote: () => void
   onCreateDir: () => void
-  onDeleteNote: () => void
+  onDeleteFile: () => void
   onSortNotes: () => void
   showSearchBar: boolean
 }
 
 export const ActionButtonsRow = ({
   className,
-  onDeleteNote,
+  onDeleteFile,
   onCreateEmptyNote,
   onSortNotes,
   onCreateDir,
@@ -38,7 +38,7 @@ export const ActionButtonsRow = ({
       <NewNoteButton onCreateEmptyNote={onCreateEmptyNote} />
       <NewDirectoryButton onCreateDir={onCreateDir} />
       <SortButton onSortNotes={onSortNotes} />
-      <DeleteButton onDeleteNote={onDeleteNote} />
+      <DeleteButton onDeleteFile={onDeleteFile} />
     </div>
   )
 }

@@ -15,6 +15,10 @@ export type NoteInfo = BaseItem & {
   bookmarked: boolean
 }
 
-export type FileSystemItem = DirectoryInfo | NoteInfo
-
 export type NoteContent = string
+
+export type NoteWithContent = NoteInfo & {
+  content: NoteContent
+}
+
+export type FileSystemItem = DirectoryInfo | NoteInfo

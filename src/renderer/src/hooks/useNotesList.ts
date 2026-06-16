@@ -2,17 +2,20 @@ import {
   createDirAtom,
   createEmptyNoteAtom,
   deleteFileAtom,
+  expandedDirsAtom,
   fileTreeAtom,
+  selectedDirPathAtom,
   selectedNotePathAtom,
   sortFilesAtom,
   sortFunctionNameAtom
 } from '@renderer/store'
-import { FileSystemItem } from '@shared/models'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 
 export const useNotesList = ({ onSelect }: { onSelect?: () => void }) => {
   const files = useAtomValue(fileTreeAtom)
   const [selectedNotePath, setSelectedNotePath] = useAtom(selectedNotePathAtom)
+  const [selectedDirPath, setSelectedDirPath] = useAtom(selectedDirPathAtom)
+  const [expandedDirs, setExpandedDirs] = useAtom(expandedDirsAtom)
   const deleteFile = useSetAtom(deleteFileAtom)
   const createEmptyNote = useSetAtom(createEmptyNoteAtom)
   const createDir = useSetAtom(createDirAtom)
@@ -20,33 +23,54 @@ export const useNotesList = ({ onSelect }: { onSelect?: () => void }) => {
   const sortFiles = useSetAtom(sortFilesAtom)
 
   const handleNoteSelect = (relativePath: string) => async () => {
+    setSelectedDirPath(null)
     setSelectedNotePath(relativePath)
+
+    await window.context.selectFile(relativePath, 'note')
 
     if (onSelect) {
       onSelect()
     }
   }
 
-  const filterFiles = (files: FileSystemItem[], searched: string): FileSystemItem[] => {
-    return files.filter((file) => file.name.toLowerCase().includes(searched.toLowerCase()))
+  const handleDirSelect = (relativePath: string) => async () => {
+    setSelectedNotePath(null)
+    setSelectedDirPath(relativePath)
+    setExpandedDirs((prev) => new Set(prev).add(relativePath))
+
+    await window.context.selectFile(relativePath, 'directory')
+
+    if (onSelect) {
+      onSelect()
+    }
   }
 
-  const getBookmarkedNotes = (files: FileSystemItem[]): FileSystemItem[] => {
-    return files.filter((file) => file.type === 'note' && file.bookmarked)
+  const toggleDirExpanded = (relativePath: string) => {
+    setExpandedDirs((prev) => {
+      const next = new Set(prev)
+      if (next.has(relativePath)) {
+        next.delete(relativePath)
+      } else {
+        next.add(relativePath)
+      }
+      return next
+    })
   }
 
   return {
     files,
     sortFiles,
     selectedNotePath,
+    selectedDirPath,
+    expandedDirs,
     setSelectedNotePath,
     deleteFile,
-    filterFiles,
-    getBookmarkedNotes,
     createEmptyNote,
     createDir,
     sortFunctionName,
     setSortFunctionName,
-    handleNoteSelect
+    handleDirSelect,
+    handleNoteSelect,
+    toggleDirExpanded
   }
 }

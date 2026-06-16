@@ -2,8 +2,8 @@ import {
   ActionButtonsRow,
   Content,
   DraggableTopBar,
+  FilePreviewList,
   MarkdownEditor,
-  NotePreviewList,
   NoteTopBar,
   RootLayout,
   SearchBar,
@@ -42,7 +42,7 @@ const App = () => {
     setShowSideBar((prev) => !prev)
   }
 
-  const handleSearchNote = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleSearchFile = (event: ChangeEvent<HTMLInputElement>) => {
     setSearched(event.target.value)
     setSelectedNotePath(null)
   }
@@ -81,7 +81,7 @@ const App = () => {
     await createDir()
   }
 
-  const handleDeleteNote = async () => {
+  const handleDeleteFile = async () => {
     await deleteFile()
   }
 
@@ -89,7 +89,7 @@ const App = () => {
     window.context.sortNotes()
   }
 
-  const handleSortNotes = (sortType: SortType) => {
+  const handleSortFiles = (sortType: SortType) => {
     setSelectedNotePath(null)
     setSortFunctionName(sortType)
     console.log(sortType)
@@ -108,7 +108,7 @@ const App = () => {
   useEffect(() => {
     if (!isInitilized && files) {
       setIsInitilized(true)
-      window.context.initilization(handleFileCreation, handleDeleteNote, handleSortNotes)
+      window.context.initilization(handleFileCreation, handleDeleteFile, handleSortFiles)
     }
   }, [files])
 
@@ -125,21 +125,21 @@ const App = () => {
         onBookMarkButtonClick={handleShowBookMarks}
       />
       <RootLayout>
-        <SideBar onDeleteNote={handleDeleteNote} showSideBar={showSideBar}>
+        <SideBar onDeleteFile={handleDeleteFile} showSideBar={showSideBar}>
           <ActionButtonsRow
             onCreateEmptyNote={handleFileCreation}
             onCreateDir={handleDirCreation}
             onSortNotes={handleSortNotesContextMenu}
-            onDeleteNote={handleDeleteNote}
+            onDeleteFile={handleDeleteFile}
             showSearchBar={searchClicked}
             className="gap-2 mt-2 mb-2"
           />
           <SearchBar
-            onInputChange={handleSearchNote}
+            onInputChange={handleSearchFile}
             showSearchBar={searchClicked}
             searched={searched}
           />
-          <NotePreviewList
+          <FilePreviewList
             showBookmarks={showBookmarks}
             searched={searched}
             onSelect={resetScroll}

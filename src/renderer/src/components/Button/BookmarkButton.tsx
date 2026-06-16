@@ -1,19 +1,20 @@
-import { bookmarkNoteAtom, selectedNoteAtom } from '@renderer/store'
+import { bookmarkNoteAtom, selectedFileAtom } from '@renderer/store'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { BsBookmarkCheck } from 'react-icons/bs'
 import { LuBookmark } from 'react-icons/lu'
 import { ActionButton } from './ActionButton'
 
 export const BookmarkButton = () => {
-  const selectedNote = useAtomValue(selectedNoteAtom)
+  const selectedFile = useAtomValue(selectedFileAtom)
   const bookmarkNote = useSetAtom(bookmarkNoteAtom)
 
   const handleBookMarkNote = () => {
     bookmarkNote()
   }
-  if (!selectedNote) return null
+  if (!selectedFile) return null
+  if (selectedFile.type === 'directory') return null
 
-  const isBookMarked = selectedNote.bookmarked
+  const isBookMarked = selectedFile.bookmarked
 
   return (
     <ActionButton

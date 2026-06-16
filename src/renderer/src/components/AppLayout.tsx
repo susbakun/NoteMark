@@ -12,11 +12,11 @@ export const RootLayout = ({ children, className, ...props }: ComponentProps<'ma
 
 type SideBarProps = ComponentProps<'aside'> & {
   showSideBar: boolean
-  onDeleteNote: () => void
+  onDeleteFile: () => void
 }
 
 export const SideBar = ({
-  onDeleteNote,
+  onDeleteFile,
   showSideBar,
   className,
   children,
@@ -27,7 +27,7 @@ export const SideBar = ({
   const handleKeyboard = (event: KeyboardEvent) => {
     const targetElement = event.target as HTMLElement
     if (event.key === 'Backspace' && event.metaKey && hasFocus(targetElement)) {
-      onDeleteNote()
+      onDeleteFile()
     }
   }
 

@@ -12,17 +12,18 @@ import { useMarkdownEditor } from '@renderer/hooks/useMarkdownEditor'
 import { ComponentProps } from 'react'
 
 export const MarkdownEditor = ({ onContextMenu }: ComponentProps<'div'>) => {
-  const { selectedNote, editorRef, handleAutoSaving, handleBlur } = useMarkdownEditor()
+  const { selectedFile, editorRef, handleAutoSaving, handleBlur } = useMarkdownEditor()
 
-  if (!selectedNote) return null
+  if (!selectedFile) return null
+  if (selectedFile.type === 'directory') return
 
   return (
     <div onContextMenu={onContextMenu}>
       <MDXEditor
         ref={editorRef}
-        key={selectedNote.relativePath}
+        key={selectedFile.relativePath}
         onChange={handleAutoSaving}
-        markdown={selectedNote.content}
+        markdown={selectedFile.content}
         onBlur={handleBlur}
         plugins={[
           headingsPlugin(),

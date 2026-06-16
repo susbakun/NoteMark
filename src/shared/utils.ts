@@ -15,18 +15,54 @@ export const sortFilesSelector = (sortType: SortType): SortFunction => {
   }
 }
 
-export const sortFilesFromAToZ: SortFunction = (files) => {
-  return files.sort((a, b) => (a.name > b.name ? 1 : a.name < b.name ? -1 : 0))
+const sortFilesFromAToZ: SortFunction = (files) => {
+  files.sort((a, b) => a.name.localeCompare(b.name))
+
+  // recursively sorting
+  files.forEach((file) => {
+    if (file.type === 'directory') {
+      sortFilesFromAToZ(file.children)
+    }
+  })
+
+  return files
 }
 
 export const sortFilesFromZToA: SortFunction = (files) => {
-  return files.sort((a, b) => (a.name > b.name ? -1 : a.name < b.name ? 1 : 0))
+  files.sort((a, b) => b.name.localeCompare(a.name))
+
+  // recursively sorting
+  files.forEach((file) => {
+    if (file.type === 'directory') {
+      sortFilesFromZToA(file.children)
+    }
+  })
+
+  return files
 }
 
 export const sortFilesFromNewToOld: SortFunction = (files) => {
-  return files.sort((a, b) => b.lastEditTime - a.lastEditTime)
+  files.sort((a, b) => b.lastEditTime - a.lastEditTime)
+
+  // recursively sorting
+  files.forEach((file) => {
+    if (file.type === 'directory') {
+      sortFilesFromNewToOld(file.children)
+    }
+  })
+
+  return files
 }
 
 export const sortFilesFromOldToNew: SortFunction = (files) => {
-  return files.sort((a, b) => a.lastEditTime - b.lastEditTime)
+  files.sort((a, b) => a.lastEditTime - b.lastEditTime)
+
+  // recursively sorting
+  files.forEach((file) => {
+    if (file.type === 'directory') {
+      sortFilesFromOldToNew(file.children)
+    }
+  })
+
+  return files
 }

@@ -2,14 +2,20 @@ import { createContextMenu } from '@/configs/AppContextMenu'
 import { createApplicationMenu } from '@/configs/AppMenu'
 import { createSideBarContextMenu } from '@/configs/SideBarContextMenu'
 import { sortButtonContextMenu } from '@/configs/SortButtonContextMenu'
-import { appDirectoryName, fileEncoding } from '@shared/constants'
-import { FileSystemItem } from '@shared/models'
+import {
+  appDirectoryName,
+  fileEncoding,
+  markdownRegex,
+  welcomeNoteFilename
+} from '@shared/constants'
+import { FileSystemItem, NoteInfo } from '@shared/models'
 import {
   CreateNote,
   DeleteFile,
   OpenLink,
   ReadNote,
   ScanDirectory,
+  SelectFile,
   ShowContextMenu,
   ShowFile,
   ShowSideBarContextMenu,
@@ -18,8 +24,10 @@ import {
 } from '@shared/types'
 import { BrowserWindow, dialog, shell } from 'electron'
 import { ensureDir, mkdir, readdir, readFile, remove, stat, writeFile } from 'fs-extra'
+import { isEmpty } from 'lodash'
 import { homedir } from 'os'
 import path from 'path'
+import welcomeNote from '../../../resources/welcomeNote.md?asset'
 
 const resolveNotePath = (relativePath: string) => path.join(getRootDir(), `${relativePath}.md`)
 
@@ -54,15 +62,46 @@ export const scanDirectory: ScanDirectory = async (dirPath, relativePrefix) => {
       })
     }
   }
+
+  // create welcome note if no note found
+  // and only on root directory
+  if (isEmpty(items) && dirPath === getRootDir()) {
+    const welcome = await createWelcomeNote()
+    items.push(welcome)
+  }
+
   return items
 }
 
-export const readNote: ReadNote = async (relativePath) => {
-  const window = BrowserWindow.getFocusedWindow()
-  const notePath = resolveNotePath(relativePath)
-  const { name: filename } = path.parse(notePath)
+const createWelcomeNote = async (): Promise<NoteInfo> => {
+  console.info(`No notes found creating a welcome note`)
 
-  window?.setRepresentedFilename(filename)
+  const content = await readFile(welcomeNote, { encoding: fileEncoding })
+  const pathToWelcomeNote = `${getRootDir()}/${welcomeNoteFilename}`
+  await writeFile(pathToWelcomeNote, content, { encoding: fileEncoding })
+  const stats = await stat(pathToWelcomeNote)
+
+  const welcome: NoteInfo = {
+    type: 'note',
+    relativePath: 'Welcome',
+    name: 'Welcome',
+    lastEditTime: stats.mtimeMs,
+    bookmarked: false
+  }
+
+  return welcome
+}
+
+export const selectFile: SelectFile = async (relativePath, type) => {
+  const window = BrowserWindow.getFocusedWindow()
+  const absolutePath =
+    type === 'note' ? resolveNotePath(relativePath) : path.join(getRootDir(), relativePath)
+
+  window?.setRepresentedFilename(absolutePath)
+}
+
+export const readNote: ReadNote = async (relativePath) => {
+  const notePath = resolveNotePath(relativePath)
   createApplicationMenu()
 
   return readFile(notePath, { encoding: fileEncoding })
@@ -98,7 +137,9 @@ export const createNote: CreateNote = async (parentRelativePath) => {
 
   console.info(`Creating note: ${filePath}`)
   await writeFile(filePath, '')
-  return fileName
+
+  const fileNameWithoutExtension = fileName.replace(markdownRegex, '')
+  return fileNameWithoutExtension
 }
 
 export const deleteFile: DeleteFile = async (relativePath, type) => {

@@ -2,6 +2,10 @@ import { DirectoryInfo, FileSystemItem, NoteContent, NoteInfo } from './models'
 
 export type GetRootDir = () => Promise<string>
 export type ScanDirectory = (dirPath: string, relativePrefix?: string) => Promise<FileSystemItem[]>
+export type SelectFile = (
+  relativePath: NoteInfo['relativePath'],
+  type: NoteInfo['type'] | DirectoryInfo['type']
+) => Promise<void>
 export type ReadNote = (relativePath: NoteInfo['relativePath']) => Promise<NoteContent>
 export type WriteNote = (
   relativePath: NoteInfo['relativePath'],
@@ -18,9 +22,10 @@ export type DeleteFile = (
   type: NoteInfo['type'] | DirectoryInfo['type']
 ) => Promise<boolean>
 export type OpenLink = (link: string) => Promise<void>
+
 export type Initialization = (
   handleCreation: () => Promise<void>,
-  handleDeleteNote: () => Promise<void>,
+  handleDeleteFile: () => Promise<void>,
   handleSortNotes: (sortType: SortType) => void
 ) => void
 export type ShowFile = (relativePath: NoteInfo['relativePath']) => void
@@ -33,3 +38,5 @@ export type SortType =
   | 'sortNotesFromZToA'
   | 'sortNotesFromNewToOld'
   | 'sortNotesFromOldToNew'
+
+export type ConditionType = (...args: string[]) => boolean

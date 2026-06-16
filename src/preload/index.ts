@@ -7,6 +7,7 @@ import {
   OpenLink,
   ReadNote,
   ScanDirectory,
+  SelectFile,
   ShowContextMenu,
   ShowSideBarContextMenu,
   ShowSortNotesContextMenu,
@@ -24,6 +25,7 @@ try {
     getRootDir: (...args: Parameters<GetRootDir>) => ipcRenderer.invoke('getRootDir', ...args),
     scanDirectory: (...args: Parameters<ScanDirectory>) =>
       ipcRenderer.invoke('scanDirectory', ...args),
+    selectFile: (...args: Parameters<SelectFile>) => ipcRenderer.invoke('selectFile', ...args),
     readNote: (...args: Parameters<ReadNote>) => ipcRenderer.invoke('readNote', ...args),
     writeNote: (...args: Parameters<WriteNote>) => ipcRenderer.invoke('writeNote', ...args),
     createNote: (...args: Parameters<CreateNote>) => ipcRenderer.invoke('createNote', ...args),
@@ -48,9 +50,9 @@ try {
         })
       }
 
-      ipcRenderer.on('deleteNote', () => {
-        const handleDeleteNote = args[1]
-        handleDeleteNote()
+      ipcRenderer.on('deleteFile', () => {
+        const handleDeleteFile = args[1]
+        handleDeleteFile()
       })
 
       ipcRenderer.on('sortNotes:AToZ', () => {

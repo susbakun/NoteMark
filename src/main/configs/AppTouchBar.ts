@@ -10,14 +10,14 @@ export const createApplicationTouchBar = (mainWindow?: BrowserWindow) => {
     icon: '/Users/amir/Electron-Projects/notemark/resources/new_note.png'
   })
 
-  const deleteNote = new TouchBarButton({
+  const deleteFile = new TouchBarButton({
     click: () => {
-      mainWindow?.webContents.send('deleteNote')
+      mainWindow?.webContents.send('deleteFile')
     },
     icon: '/Users/amir/Electron-Projects/notemark/resources/delete_note.png'
   })
 
   return new TouchBar({
-    items: [newNote, deleteNote]
+    items: [newNote, deleteFile]
   })
 }
